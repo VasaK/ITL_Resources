@@ -1,0 +1,200 @@
+<div>
+	<div ng-show="!helper.formReady">
+	  	<div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open loading-modal">
+	    	<div class="slds-modal__container">
+	      		<div class="slds-modal__header">
+	      			<div class="slds-spinner--large centered-spinner">
+					  	<img ng-src="{{resourceUrl}}/images/spinners/slds_spinner_brand.gif" alt="Loading..." />
+					</div>
+	        		<h2 class="slds-text-heading--medium">Loading...</h2>
+	      		</div>
+	    	</div>
+	  	</div>
+	  	<div class="slds-modal-backdrop slds-modal-backdrop--open loading-modal-backdrop"></div>
+	</div>
+	<div class="slds-page-header" ng-show="helper.formReady">
+	    <div class="slds-grid">
+	        <div class="slds-col slds-has-flexi-truncate">
+	            <div class="slds-media">
+	                <div class="slds-media__body">
+	                	<p class="slds-text-heading--label">Service Request Form</p>
+	                    <div class="slds-grid">
+	                        <h1 class="slds-text-heading--medium slds-m-right--small slds-truncate slds-align-middle" title="{{template.Template_Name__c}}" ng-bind-html="srForm.form.Form_Name__c"></h1>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	        <div class="slds-col slds-no-flex slds-align-bottom">
+	            <div class="slds-button-group" role="group">
+	            	<button class="slds-button slds-button--neutral" ng-click="cancel()">Cancel</button>
+	                <button class="slds-button slds-button--neutral" ng-click="handleSave()">Save</button>
+	            </div>
+	        </div>
+	    </div>
+    </div>
+    <div id="template-panel" ng-show="helper.formReady">
+    	<div>
+  			<span class="form-error" ng-show="srForm.validation.error">{{srForm.validation.message}}</span>
+  		</div>
+    	<div class="slds-form--stacked">
+			<div class="slds-form-element" ng-if="srForm.components.length == 0">
+				<p class="slds-text-heading--medium">Form has no components.</p>
+			</div>
+			<div ng-if="srForm.components.length > 0" class="slds-form-element template-element" ng-repeat="(indexCmp, component) in srForm.components">
+				<div ng-if="!component.component.Is_Recurring_Set__c && (!component.component.Internal_Only__c || (component.component.Internal_Only__c && !isPortalUser))">
+					<p ng-if="component.component.Component_Type__c == 'Statement'" class="" title="{{component.component.Text__c}}" ng-bind-html="component.component.Text__c"></p>
+					<hr ng-if="component.component.Component_Type__c == 'Header'" class="header-hr"/>
+                    <p ng-if="component.component.Component_Type__c == 'Header'" class="slds-text-heading--medium header-bold" title="{{component.component.Text__c}}" ng-bind-html="component.component.Text__c"></p>
+                    <figure ng-if="component.component.Component_Type__c == 'Image'">
+	                    <img ng-if="component.component.Image_Document_Id__c" ng-src="{{isPortalUser ? '/srportal' : ''}}/servlet/servlet.FileDownload?file={{component.component.Image_Document_Id__c}}"/>
+		                <figcaption ng-bind-html="component.component.Text__c"></figcaption>
+		            </figure>
+                    <div ng-if="component.component.Component_Type__c == 'Question'">
+	                    <label ng-if="component.component.Input_Type__c != 'Checkbox'" class="slds-form-element__label {{(component.component.Required__c) ? 'slds-is-required' : ''}}" ng-bind-html="component.component.Text__c"></label>
+	                    <div class="slds-form-element__control" ng-if="component.component.Input_Type__c == 'Picklist'">
+	                        <select class="slds-select" ng-model="component.component.Answer_Text__c">
+	                        	<option value="">--None--</option>
+	                            <option ng-repeat="picklistOption in (component.component.Picklist_Options__c | picklistTransform)">{{picklistOption}}</option>
+	                        </select>
+	                        <span class="form-error" ng-show="component.component.validation.error">{{component.component.validation.message}}</span>
+	                    </div>
+	                    <label class="slds-checkbox" ng-if="component.component.Input_Type__c == 'Checkbox'">
+	    					<input type="checkbox" ng-model="component.component.Answer_Checkbox__c"/>
+							<span class="slds-checkbox--faux"></span>
+							<span class="slds-form-element__label"><span ng-bind-html="component.component.Text__c" style="display:inline-block;"></span></span>
+	  					</label>
+	                    <div class="slds-form-element__control" ng-if="component.component.Input_Type__c == 'Text'">
+	                        <input type="text" class="slds-input" ng-model="component.component.Answer_Text__c" />
+	                        <span class="form-error" ng-show="component.component.validation.error">{{component.component.validation.message}}</span>
+	                    </div>
+	                    <div class="slds-form-element__control" ng-if="component.component.Input_Type__c == 'Date'">
+	                        <input type="text" class="slds-input" ng-model="component.component.Answer_Date__c" date-picker/>
+	                        <span class="form-error" ng-show="component.component.validation.error">{{component.component.validation.message}}</span>
+	                    </div>
+	                    <div class="slds-form-element__control" ng-if="component.component.Input_Type__c == 'Number'">
+	                        <input type="number" class="slds-input" ng-model="component.component.Answer_Number__c" />
+	                        <span class="form-error" ng-show="component.component.validation.error">{{component.component.validation.message}}</span>
+	                    </div>
+	                    <div class="slds-form-element__control" ng-if="component.component.Input_Type__c == 'Email'">
+	                        <input type="email" class="slds-input" ng-model="component.component.Answer_Email__c" />
+	                        <span class="form-error" ng-show="component.component.validation.error">{{component.component.validation.message}}</span>
+	                    </div>
+	                    <div class="slds-form-element__control" ng-if="component.component.Input_Type__c == 'Phone'">
+	                        <input type="tel" class="slds-input" ng-model="component.component.Answer_Phone__c" />
+	                        <span class="form-error" ng-show="component.component.validation.error">{{component.component.validation.message}}</span>
+	                    </div>
+	                    <div class="slds-form-element__control" ng-if="component.component.Input_Type__c == 'State'">
+	                        <input type="text" class="slds-input" ng-model="component.component.Answer_Text__c" />
+	                        <span class="form-error" ng-show="component.component.validation.error">{{component.component.validation.message}}</span>
+	                    </div>
+	                    <div class="slds-form-element__control" ng-if="component.component.Input_Type__c == 'Zip Code'">
+	                        <input type="text" class="slds-input" ng-model="component.component.Answer_Text__c" />
+	                        <span class="form-error" ng-show="component.component.validation.error">{{component.component.validation.message}}</span>
+	                    </div>
+	                    <div class="slds-form-element__control" ng-if="component.component.Input_Type__c == 'SSN'">
+	                        <input type="text" class="slds-input" ng-model="component.component.Answer_Text__c" />
+	                        <span class="form-error" ng-show="component.component.validation.error">{{component.component.validation.message}}</span>
+	                    </div>
+                    </div>
+                </div>
+                <div ng-if="component.component.Is_Recurring_Set__c">
+	                <fieldset ng-repeat="(indexInst, instance) in component.instances" class="recurring-fieldset">
+	                	<div class="slds-clearfix">
+	                		<div class="slds-float--left">
+	                			<h2 class="slds-text-heading--medium">#{{indexInst + 1}}</h2>
+	                		</div>
+		                	<div class="slds-float--right">
+				                <button class="slds-button" ng-click="removeRecurringSetInstance(component, indexInst)" ng-if="component.instances.length > 1">
+									<svg aria-hidden="true" class="slds-button__icon slds-button__icon--left">
+								    	<use xlink:href="{{xlinkHelper.close}}"></use>
+								  	</svg>Remove</button>
+						  	</div>
+					  	</div>
+	                	<div class="slds-form-element" ng-repeat="(indexSub, subComp) in instance.subComponents" ng-if="!component.component.Internal_Only__c || (component.component.Internal_Only__c && !isPortalUser)">
+	                		<p ng-if="subComp.Component_Type__c == 'Statement'" class="" title="{{subComp.Text__c}}" ng-bind-html="subComp.Text__c"></p>
+		                    <p ng-if="subComp.Component_Type__c == 'Header'" class="slds-text-heading--medium" title="{{subComp.Text__c}}" ng-bind-html="subComp.Text__c"></p>
+		                    <figure ng-if="subComp.Component_Type__c == 'Image'">
+			                    <img ng-if="subComp.Image_Document_Id__c" ng-src="{{isPortalUser ? '/srportal' : ''}}/servlet/servlet.FileDownload?file={{subComp.Image_Document_Id__c}}"/>
+				                <figcaption ng-bind-html="subComp.Text__c"></figcaption>
+				            </figure>
+		                    <div ng-if="subComp.Component_Type__c == 'Question'">
+			                    <label ng-if="subComp.Input_Type__c != 'Checkbox'" class="slds-form-element__label {{(subComp.Required__c) ? 'slds-is-required' : ''}}" ng-bind-html="subComp.Text__c"></label>
+			                    <div class="slds-form-element__control" ng-if="subComp.Input_Type__c == 'Picklist'">
+			                        <select class="slds-select" ng-model="subComp.Answer_Text__c">
+			                        	<option value="">--None--</option>
+			                            <option ng-repeat="picklistOption in (subComp.Picklist_Options__c | picklistTransform)">{{picklistOption}}</option>
+			                        </select>
+			                        <span class="form-error" ng-show="subComp.validation.error">{{subComp.validation.message}}</span>
+			                    </div>
+			                    <label class="slds-checkbox" ng-if="subComp.Input_Type__c == 'Checkbox'">
+			    					<input type="checkbox" ng-model="subComp.Answer_Checkbox__c"/>
+									<span class="slds-checkbox--faux"></span>
+									<span class="slds-form-element__label"><span ng-bind-html="subComp.Text__c" style="display:inline-block;"></span></span>
+			  					</label>
+			                    <div class="slds-form-element__control" ng-if="subComp.Input_Type__c == 'Text'">
+			                        <input type="text" class="slds-input" ng-model="subComp.Answer_Text__c" />
+			                        <span class="form-error" ng-show="subComp.validation.error">{{subComp.validation.message}}</span>
+			                    </div>
+			                    <div class="slds-form-element__control" ng-if="subComp.Input_Type__c == 'Date'">
+			                        <input type="text" class="slds-input" ng-model="subComp.Answer_Date__c" date-picker />
+			                        <span class="form-error" ng-show="subComp.validation.error">{{subComp.validation.message}}</span>
+			                    </div>
+			                    <div class="slds-form-element__control" ng-if="subComp.Input_Type__c == 'Number'">
+			                        <input type="number" class="slds-input" ng-model="subComp.Answer_Number__c" />
+			                        <span class="form-error" ng-show="subComp.validation.error">{{subComp.validation.message}}</span>
+			                    </div>
+			                    <div class="slds-form-element__control" ng-if="subComp.Input_Type__c == 'Email'">
+			                        <input type="email" class="slds-input" ng-model="subComp.Answer_Email__c" />
+			                        <span class="form-error" ng-show="subComp.validation.error">{{subComp.validation.message}}</span>
+			                    </div>
+			                    <div class="slds-form-element__control" ng-if="subComp.Input_Type__c == 'Phone'">
+			                        <input type="tel" class="slds-input" ng-model="subComp.Answer_Phone__c" />
+			                        <span class="form-error" ng-show="subComp.validation.error">{{subComp.validation.message}}</span>
+			                    </div>
+			                    <div class="slds-form-element__control" ng-if="subComp.Input_Type__c == 'State'">
+			                        <input type="text" class="slds-input" ng-model="subComp.Answer_Text__c" />
+			                        <span class="form-error" ng-show="subComp.validation.error">{{subComp.validation.message}}</span>
+			                    </div>
+			                    <div class="slds-form-element__control" ng-if="subComp.Input_Type__c == 'Zip Code'">
+			                        <input type="text" class="slds-input" ng-model="subComp.Answer_Text__c" />
+			                        <span class="form-error" ng-show="subComp.validation.error">{{subComp.validation.message}}</span>
+			                    </div>
+			                    <div class="slds-form-element__control" ng-if="subComp.Input_Type__c == 'SSN'">
+			                        <input type="text" class="slds-input" ng-model="subComp.Answer_Text__c" />
+			                        <span class="form-error" ng-show="subComp.validation.error">{{subComp.validation.message}}</span>
+			                    </div>
+		                    </div>
+	                	</div>
+	                </fieldset>
+	                <div class="slds-form-element">
+		                <button class="slds-button slds-button--neutral" ng-click="addRecurringSetInstance(component)">
+							<svg aria-hidden="true" class="slds-button__icon slds-button__icon--left">
+						    	<use xlink:href="{{xlinkHelper.add}}"></use>
+						  	</svg>Add</button>
+				  	</div>
+                </div>
+			</div>
+			<div class="slds-form-element">
+				<hr class="header-hr"/>
+                <p class="slds-text-heading--medium header-bold">Attachments</p>
+			</div>
+			<div class="slds-form-element">
+				<div class="slds-form-element__control">
+			    	<input type="file" ng-model="attachFile" base-sixty-four-input onload="onFileLoad" maxsize="500" accept=".pdf"/>
+			    </div>
+			</div>
+		</div>
+    </div>
+    <div class="slds-page-header page-footer">
+	    <div class="slds-grid">
+	    	<div class="slds-col slds-has-flexi-truncate">
+	        </div>
+	        <div class="slds-col slds-no-flex slds-align-bottom">
+	            <div class="slds-button-group" role="group">
+	            	<button class="slds-button slds-button--neutral" ng-click="cancel()">Cancel</button>
+	                <button class="slds-button slds-button--neutral" ng-click="handleSave()">Save</button>
+	            </div>
+	        </div>
+	    </div>
+    </div>
+</div>

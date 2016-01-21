@@ -1,0 +1,109 @@
+<div ng-controller="createNoteModalController">
+	<div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open">
+	    <div class="slds-modal__container">
+	    	<div class="slds-modal__header">
+	        	<h2 class="slds-text-heading--medium">Create Note</h2>
+	      	</div>
+	      	<div class="slds-modal__content">
+	      		<div>
+	      			<span class="form-error" ng-show="formValidator.form.error">{{formValidator.form.message}}</span>
+	      		</div>
+	        	<div>
+	        		<div class="slds-grid slds-wrap">
+	          			<div class="slds-form-element slds-col slds-size--1-of-1">
+							<label class="slds-form-element__label"><span class="required-field">* </span>Subject:</label>
+							<div class="slds-form-element__control">
+								<input type="text" ng-model="noteWrapper.note.Subject__c" class="slds-input" maxlength="255" />
+								<span class="form-error" ng-show="formValidator.Subject__c.error">{{formValidator.Subject__c.message}}</span>
+							</div>
+						</div>
+						<div class="slds-form-element slds-col slds-size--1-of-1">
+							<label class="slds-form-element__label"><span class="required-field">* </span>Reason:</label>
+							<div class="slds-form-element__control">
+								<select ng-model="noteWrapper.note.Reason__c" ng-include="noteReasonOptionsTemplate" class="slds-select"></select>
+								<span class="form-error" ng-show="formValidator.Reason__c.error">{{formValidator.Reason__c.message}}</span>
+							</div>
+						</div>
+						<div class="slds-form-element slds-col slds-size--1-of-2">
+							<label class="slds-checkbox">
+								<input type="checkbox" ng-model="noteWrapper.note.Use_Warning__c"/>
+								<span class="slds-checkbox--faux"></span>
+								<span class="slds-form-element__label">Use Warning</span>
+							</label>
+						</div>
+						<div class="slds-form-element slds-col slds-size--1-of-2" ng-show="noteWrapper.note.Use_Warning__c">
+							<label class="slds-form-element__label">Expire On:</label>
+							<div class="slds-form-element__control">
+								<input type="text" ng-model="noteWrapper.note.Expire_on__c" class="slds-input" mindate="0d" date-picker/>
+								<span class="form-error" ng-show="formValidator.Expire_on__c.error">{{formValidator.Expire_on__c.message}}</span>
+							</div>
+						</div>
+						<div class="slds-form-element slds-col slds-size--1-of-1">
+							<label class="slds-form-element__label" ng-show="displayContactValue">Contact (select from list):</label>
+							<label class="slds-form-element__label" ng-show="displayContactLabel">Contact:</label>
+							<div class="slds-form-element__control l slds-input-has-icon slds-input-has-icon--right">
+								<svg aria-hidden="true" class="slds-input__icon ie-down-icon" ng-show="displayContactValue">
+							        <use xlink:href="{{xlinkHelper.down}}"></use>
+							    </svg>
+							    <div class="slds-pill-container" ng-show="displayContactLabel">
+							    	<span class="slds-pill slds-pill--bare">
+							          	<a href="#" class="slds-pill__label">
+							            	<svg aria-hidden="true" class="slds-icon slds-icon-standard-account slds-icon--small ie-contact-icon">
+							              		<use xlink:href="{{xlinkHelper.contact}}"></use>
+							            	</svg><span ng-bind-html="contactName"></span></a>
+						          		<button class="slds-button slds-button--icon-bare" ng-click="clearContact()">
+						            		<svg aria-hidden="true" class="slds-button__icon ie-close-icon">
+							              		<use xlink:href="{{xlinkHelper.close}}"></use>
+							            	</svg>
+							          	</button>
+							        </span>
+							    </div>
+								<input type="text" ng-model="contactSearch" class="slds-input" ng-show="displayContactValue" contact-lookup/>
+							</div>
+							<span class="form-error" ng-show="formValidator.Contact__c.error">{{formValidator.Contact__c.message}}</span>
+						</div>
+						<div class="slds-form-element slds-col slds-size--1-of-3">
+							<label class="slds-form-element__label"><span class="required-field">* </span>Type:</label>
+							<div class="slds-form-element__control">
+								<select class="slds-select" ng-model="textWrapper.text.Type__c">
+									<option value="">--Select--</option>
+									<option>General</option>
+									<option>Phone</option>
+									<option>Email</option>
+									<option>Fax</option>
+									<option>Mail</option>
+								</select>
+								<span class="form-error" ng-show="formValidator.Type__c.error">{{formValidator.Type__c.message}}</span>
+							</div>
+						</div>
+						<div class="slds-form-element slds-col slds-size--1-of-3">
+							<label class="slds-form-element__label"><span class="required-field">* </span>Score:</label>
+							<div class="slds-form-element__control">
+								<select class="slds-select" ng-model="textWrapper.text.Notes_Text_Score__c">
+									<option value="">--Select--</option>
+									<option value="1 - Basic Issue(<5 min)">1 - Basic Issue(&lt;5 min)</option>
+									<option>2 - Regular Activity (5 -15 min)</option>
+									<option>3 - Involved Activity (15-45 min)</option>
+									<option value="4 - Extraordinary Activity ( > 45 min )">4 - Extraordinary Activity ( &gt; 45 min )</option>
+								</select>
+								<span class="form-error" ng-show="formValidator.Notes_Text_Score__c.error">{{formValidator.Notes_Text_Score__c.message}}</span>
+							</div>
+						</div>
+						<div class="slds-form-element slds-col slds-size--1-of-1">
+							<label class="slds-form-element__label"><span class="required-field">* </span>Note:</label>
+							<div class="slds-form-element__control">
+								<textarea class="slds-textarea" ng-model="textWrapper.text.Notes__c" maxlength="32768"></textarea>
+								<span class="form-error" ng-show="formValidator.Notes__c.error">{{formValidator.Notes__c.message}}</span>
+							</div>
+						</div>
+					</div>
+	        	</div>
+	      	</div>
+	      	<div class="slds-modal__footer slds-modal__footer--directional">
+	        	<button class="slds-button slds-button--neutral" ng-click="cancel()">Cancel</button>
+	        	<button class="slds-button slds-button--brand" ng-click="saveNote()">Save</button>
+	      	</div>
+	    </div>
+  	</div>
+  	<div class="slds-modal-backdrop slds-modal-backdrop--open"></div>
+</div>

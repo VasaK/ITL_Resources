@@ -1,0 +1,57 @@
+<div ng-controller="appendNoteModalController">
+	<div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open">
+	    <div class="slds-modal__container">
+	    	<div class="slds-modal__header">
+	        	<h2 class="slds-text-heading--medium">Append Note</h2>
+	      	</div>
+	      	<div class="slds-modal__content">
+	      		<div>
+	      			<span class="form-error" ng-show="formValidator.form.error">{{formValidator.form.message}}</span>
+	      		</div>
+	        	<div>
+	          		<div class="slds-grid slds-wrap">
+	          			<div class="slds-form-element slds-col slds-size--1-of-2">
+							<label class="slds-form-element__label"><span class="required-field">* </span>Type:</label>
+							<div class="slds-form-element__control">
+								<select class="slds-select" ng-model="textWrapper.text.Type__c">
+									<option value="">--Select--</option>
+									<option>General</option>
+									<option>Phone</option>
+									<option>Email</option>
+									<option>Fax</option>
+									<option>Mail</option>
+								</select>
+								<span class="form-error" ng-show="formValidator.Type__c.error">{{formValidator.Type__c.message}}</span>
+							</div>
+						</div>
+						<div class="slds-form-element slds-col slds-size--1-of-2">
+							<label class="slds-form-element__label"><span class="required-field">* </span>Score:</label>
+							<div class="slds-form-element__control">
+								<select class="slds-select" ng-model="textWrapper.text.Notes_Text_Score__c">
+									<option value="">--Select--</option>
+									<option value="1 - Basic Issue(<5 min)">1 - Basic Issue(&lt;5 min)</option>
+									<option>2 - Regular Activity (5 -15 min)</option>
+									<option>3 - Involved Activity (15-45 min)</option>
+									<option value="4 - Extraordinary Activity ( > 45 min )">4 - Extraordinary Activity ( &gt; 45 min )</option>
+								</select>
+								<span class="form-error" ng-show="formValidator.Notes_Text_Score__c.error">{{formValidator.Notes_Text_Score__c.message}}</span>
+							</div>
+						</div>
+						<div class="slds-form-element slds-col slds-size--1-of-1">
+							<label class="slds-form-element__label"><span class="required-field">* </span>Note:</label>
+							<div class="slds-form-element__control">
+								<textarea class="slds-textarea" ng-model="textWrapper.text.Notes__c" maxlength="32768"></textarea>
+								<span class="form-error" ng-show="formValidator.Notes__c.error">{{formValidator.Notes__c.message}}</span>
+							</div>
+						</div>
+					</div>
+	        	</div>
+	      	</div>
+	      	<div class="slds-modal__footer slds-modal__footer--directional">
+	        	<button class="slds-button slds-button--neutral" ng-click="cancel()">Cancel</button>
+	        	<button class="slds-button slds-button--brand" ng-click="saveText()">Save</button>
+	      	</div>
+	    </div>
+  	</div>
+  	<div class="slds-modal-backdrop slds-modal-backdrop--open"></div>
+</div>

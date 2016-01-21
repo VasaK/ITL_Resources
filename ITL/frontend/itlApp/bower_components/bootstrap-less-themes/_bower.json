@@ -1,0 +1,20 @@
+{
+  "name": "bootstrap-less-themes",
+  "main": "main.less",
+  "dependencies": {},
+  "description": "Provides a collection of LESS variables and overrides for customizing Bootstrap",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/angular-brunch/bootstrap-less-themes.git"
+  },
+  "homepage": "https://github.com/angular-brunch/bootstrap-less-themes",
+  "_release": "a195cd62d1",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "a195cd62d1312f5764fcd0bf90284d6aee7095ff"
+  },
+  "_source": "https://github.com/angular-brunch/bootstrap-less-themes.git",
+  "_target": "*",
+  "_originalSource": "https://github.com/angular-brunch/bootstrap-less-themes.git"
+}

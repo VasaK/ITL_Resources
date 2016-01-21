@@ -1,0 +1,54 @@
+<!doctype html>
+<html ng-app="slickAngularValidationTestApp">
+<head>
+    <title>Slick angular validation</title>
+    <style>
+        body {
+            margin-top: 25px;
+            font-family: arial, sans-serif;
+        }
+
+        .container {
+            width: 960px;
+            margin: 0 auto;
+        }
+
+        input {
+            border: 1px solid #ccc;
+        }
+        label {
+            display: block;
+        }
+
+        .checkbox {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form name="form" novalidate>
+            <label for="required">Required</label>
+            <input type="text" ng-model="data.keff" name="keff" validate="required" id="required"/>
+
+            <label for="">Keff2</label>
+            <input type="text" ng-model="data.keff2" name="keff2" />
+
+            <label for="">instring</label>
+            <input type="text" ng-model="data.doh" name="doh" validate="maxlength:data.keff"/>
+            {{data.doh}}
+            <label for="">number</label>
+            <input type="text" ng-model="data.num" name="num" validate="maxlength:3"/>
+
+            <label for="">required if</label>
+            <input type="text" ng-model="data.gdfgdf" name="requiredif" validate="requiredif:data.keff=data.keff2"/>
+
+            <label class="checkbox" for="acc">Accepted</label>
+            <input type="checkbox" ng-model="data.test" name="accepted" validate="accepted" id="acc"/>
+
+        </form>
+    </div>
+    <!-- inject:js -->
+    <!-- endinject -->
+</body>
+</html>

@@ -1,0 +1,284 @@
+<div >
+	<div ng-if="!helper.formReady">
+	  	<div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open loading-modal">
+	    	<div class="slds-modal__container">
+	      		<div class="slds-modal__header">
+	      			<div class="slds-spinner--large centered-spinner">
+					  	<img ng-src="{{resourceUrl}}/images/spinners/slds_spinner_brand.gif" alt="Loading..." />
+					</div>
+	        		<h2 class="slds-text-heading--medium">Loading...</h2>
+	      		</div>
+	    	</div>
+	  	</div>
+	  	<div class="slds-modal-backdrop slds-modal-backdrop--open loading-modal-backdrop"></div>
+	</div>
+	<div ng-show="helper.showTaskEditModal" ng-include="taskModalTemplate"></div>
+	<div ng-show="helper.showPhaseEditModal" ng-include="phaseModalTemplate"></div>
+	<div class="slds-page-header">
+	    <div class="slds-grid">
+	        <div class="slds-col slds-has-flexi-truncate">
+	            <div class="slds-media">
+	                <div class="slds-media__body">
+	                	<p class="slds-text-heading--label">Installation Task List Template</p>
+	                    <div class="slds-grid">
+	                        <h1 class="slds-text-heading--medium slds-m-right--small slds-truncate slds-align-middle" ng-bind-html="template.iList.ITL_Name__c"></h1>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	        <div class="slds-col slds-no-flex slds-align-bottom">
+	            <div class="slds-button-group" role="group">
+	                <button class="slds-button slds-button--neutral" ng-click="goToTemplateDetails()">Go to IT List Template Details</button>
+	            </div>
+	        </div>
+	    </div>
+    </div>
+    <div>
+		<span class="form-error" ng-show="errorMessage">{{errorMessage}}</span>
+	</div>
+    <div>
+	    <div id="component-list-panel" class="" affixed-component-panel>
+	    	<div class="slds-form component-search-container">
+		  		<div class="slds-form-element">
+		  			<label class="slds-form-element__label">Search Components:</label>
+		  			<div class="slds-form-element__control">
+		  				<input type="text" class="slds-input" ng-model="componentSearchTerm" component-search/>
+		  			</div>
+		  		</div>
+	  		</div>
+	    	<div class="slds-tabs--scoped">
+			  	<ul class="slds-tabs--scoped__nav" role="tablist">
+			    	<li class="tasks--tab slds-tabs__item slds-text-heading--label slds-active" role="presentation">
+			    		<a ng-click="switchTab('tasks')" role="tab" tabindex="0" aria-selected="true">
+			    			Tasks
+			    		</a>
+		    		</li>
+			    	<li class="phases--tab slds-tabs__item slds-text-heading--label" role="presentation">
+			    		<a ng-click="switchTab('phases')" role="tab" tabindex="-1" aria-selected="false">
+			    			Phases
+		    			</a>
+	    			</li>
+			  	</ul>
+			  	<div class="tasks--panel slds-tabs__content slds-show" role="tabpanel">
+			    	<ul class="component-list" available-components-panel>
+				    	<li class="available-component" data-task-id="{{task.Id}}" data-phase-id="{{task.Phase_Template__c}}" ng-repeat="task in availableTasks" available-task-draggable>
+		    				<div class="slds-box recurring-set-component-container background-task">
+				                <div class="slds-media__body">
+				                	<p class="slds-tile__title slds-truncate" ng-bind-html="task.Task_Name__c"></p>
+				                	<div class="slds-tile__detail slds-text-body--small">
+			                    		<dl class="slds-dl--inline">
+			                      			<dt class="slds-dl--inline__label">Phase:</dt>
+			                      			<dd class="slds-dl--inline__detail" ng-bind-html="task.Phase_Template__r.Phase_Name__c"></dd>
+			                    		</dl>
+				                	</div>
+				              	</div>
+					    	</div>
+				    	</li>
+				    </ul>
+			  	</div>
+			  	<div class="phases--panel slds-tabs__content" role="tabpanel">
+			    	<ul class="component-list" available-components-panel>
+				    	<li class="available-component" data-phase-id="{{phase.Id}}" ng-repeat="phase in availablePhases" available-phase-draggable>
+		    				<div class="slds-box template-component-container background-phase">
+		    					<p class="slds-truncate slds-text-body--medium" ng-bind-html="phase.Phase_Name__c"></p>
+					    	</div>
+				    	</li>
+				    </ul>
+			  	</div>
+			</div>
+	    </div>
+	    <div id="template-panel">
+	    	<div class="components-button-section">
+		    	<button class="slds-button" aria-live="assertive" ng-if="!templateEditMode" ng-click="toggleTemplateEdit()">
+	  				<span>
+	    				<svg aria-hidden="true" class="slds-button__icon--stateful slds-button__icon--left ie-edit-icon">
+	      					<use xlink:href="{{xlinkHelper.edit}}"></use>
+	    				</svg>Edit Layout</span>
+				</button>
+				<button class="slds-button" aria-live="assertive" ng-if="templateEditMode" ng-click="saveTemplate()">
+	  				<span>
+	    				<svg aria-hidden="true" class="slds-button__icon--stateful slds-button__icon--left ie-check-icon">
+	      					<use xlink:href="{{xlinkHelper.check}}"></use>
+	    				</svg>Save Layout</span>
+				</button>
+			</div>
+			<div ng-if="!templateEditMode">
+				<div class="slds-form-element" ng-if="template.phaseWrappers.length == 0">
+					<p class="slds-text-heading--medium">Template has no components.</p>
+				</div>
+				<div ng-if="template.phaseWrappers.length > 0" ng-repeat="(indexPhase, phaseWrapper) in template.phaseWrappers">
+					<div class="slds-text-heading--small phase-heading" ng-bind-html="phaseWrapper.association.Phase_Template__r.Phase_Name__c"></div>
+					<ul class="slds-timeline tasks-phase-{{phaseWrapper.association.Phase_Template__c}}">
+					  	<li class="slds-timeline__item" ng-repeat="(indexTask, taskWrapper) in phaseWrapper.taskWrappers">
+					    	<div class="slds-media slds-media--reverse">
+					      		<div class="slds-media__figure">
+					        		<div class="slds-timeline__actions">
+					          			<p class="slds-timeline__date">
+						          			<!-- <span ng-if="taskWrapper.association.Target_Date_Based_On__c == 'List Creation Date'">List Creation Date</span>
+			                      			<span ng-if="taskWrapper.association.Target_Date_Based_On__c == 'Plan Date Field'">Plan Field: <i>{{taskWrapper.association.Target_Date_Plan_Date_Field__c}}</i></span>
+			                      			<span ng-if="taskWrapper.association.Target_Date_Based_On__c == 'Task Completion Date'">Task Completion: <i>{{taskWrapper.targetDateTaskIndex}}</i></span>
+			                      			<span ng-if="taskWrapper.association.Target_Date_Additional_Days__c > 0">+{{taskWrapper.association.Target_Date_Additional_Days__c}} days</span>
+			                      			<span ng-if="taskWrapper.association.Target_Date_Additional_Days__c < 0">{{taskWrapper.association.Target_Date_Additional_Days__c}} days</span> -->
+		                      			</p>
+					        		</div>
+					      		</div>
+					      		<div class="slds-media__body">
+					        		<div class="slds-media slds-media--timeline slds-timeline__media--task {{taskWrapper.association.Task_Template__r.Group_Responsible__c == 'RPS' ? 'rps-timeline-line' : 'cbt-timeline-line'}}">
+					          			<div class="slds-media__figure">
+					            			<svg aria-hidden="true" class="slds-icon slds-icon-standard-task slds-timeline__icon ie-task-icon {{taskWrapper.association.Task_Template__r.Group_Responsible__c == 'RPS' ? 'rps-task-icon' : 'cbt-task-icon'}}">
+					              				<use xlink:href="{{xlinkHelper.task}}"></use>
+					            			</svg>
+					          			</div>
+				          				<div class="slds-media__body">
+					            			<div class="slds-media slds-tile slds-media--small">
+					              				<div class="slds-media__body">
+					                				<p class="slds-tile__title slds-truncate" ng-bind-html="taskWrapper.association.Task_Template__r.Task_Name__c"></p>
+					                				<p class="slds-text-body--small nonedit-task-description" ng-bind-html="taskWrapper.association.Task_Template__r.Description__c"></p>
+					                				<div class="slds-tile__detail slds-text-body--small">
+								                		<dl class="slds-dl--inline slds-text-body--small" ng-if="taskWrapper.association.Target_Date_Based_On__c">
+							                      			<dt class="slds-dl--inline__label">Target Date:</dt>
+							                      			<dd class="slds-dl--inline__detail">
+								                      			<span ng-if="taskWrapper.association.Target_Date_Based_On__c == 'List Creation Date'">List Creation Date</span>
+								                      			<span ng-if="taskWrapper.association.Target_Date_Based_On__c == 'Plan Date Field'">Plan Field: <i>{{taskWrapper.association.Target_Date_Plan_Date_Field__c}}</i></span>
+								                      			<span ng-if="taskWrapper.association.Target_Date_Based_On__c == 'Task Completion Date'">Task Completion: <i>{{taskWrapper.targetDateTaskIndex | changeTaskNumberToName:taskList}}</i></span>
+								                      			<span ng-if="taskWrapper.association.Target_Date_Additional_Days__c > 0"> +{{taskWrapper.association.Target_Date_Additional_Days__c}} days</span>
+								                      			<span ng-if="taskWrapper.association.Target_Date_Additional_Days__c < 0"> {{taskWrapper.association.Target_Date_Additional_Days__c}} days</span>
+							                      			</dd>
+							                    		</dl>
+							                    		<dl class="slds-dl--inline slds-text-body--small" ng-if="taskWrapper.prereqTaskIndex">
+							                      			<dt class="slds-dl--inline__label">Prerequisite Task:</dt>
+							                      			<dd class="slds-dl--inline__detail">{{taskWrapper.prereqTaskIndex | changeTaskNumberToName:taskList}}</dd>
+							                    		</dl>
+								                	</div>
+					              				</div>
+					            			</div>
+					          			</div>
+					        		</div>
+					      		</div>
+					    	</div>
+					  	</li>
+				  	</ul>
+			  	</div>
+			</div>
+			<button ng-if="templateEditMode && template.phaseWrappers.length == 0" class="slds-button slds-button--neutral" ng-click="showAddPhaseModal(0)">Add Phase</button>
+		    <ul class="template-components" ng-if="templateEditMode" phase-sortable>
+		    	<li ng-repeat="(indexPhase, phaseWrapper) in template.phaseWrappers" data-association-id="{{phaseWrapper.association.Id}}" data-phase-id="{{phaseWrapper.association.Phase_Template__c}}" class="template-component" phase>
+    				<div class="slds-box template-component-container background-phase {{templateEditMode ? 'template-component-adder' : ''}}" phase-container>
+    					<div class="edit-component-corner-container">
+	    					<button class="slds-button edit-component-corner-button" phase-edit>
+	    						<svg aria-hidden="true" class="edit-component-corner-button-icon slds-button__icon slds-button__icon--large slds-button__icon--inverse slds-icon-action-edit ie-edit2-icon">
+							    	<use xlink:href="{{xlinkHelper.edit2}}"></use>
+							  	</svg>
+	    					</button>
+    					</div>
+    					<div class="add-component-above-container">
+	    					<button class="slds-button add-component-above-button" ng-click="showAddPhaseModal(indexPhase)">
+							  	<svg aria-hidden="true" class="slds-button__icon slds-button__icon--small slds-button__icon--inverse ie-add-icon">
+							    	<use xlink:href="{{xlinkHelper.add}}"></use>
+							  	</svg>
+							</button>
+						</div>
+			    		<dl>
+			                <dd>
+			    				<div class="slds-media slds-tile">
+			    					<div class="slds-media__figure">
+    									<svg aria-hidden="true" class="slds-icon slds-icon-standard-groups ie-environment_hub-icon">
+      										<use xlink:href="{{xlinkHelper.environment_hub}}"></use>
+    									</svg>
+  									</div>
+  									<div class="slds-media__body">
+									    <p class="slds-tile__title">Phase</p>
+									    <div class="slds-tile__detail">
+									      	<p class="slds-truncate slds-text-heading--medium" ng-bind-html="phaseWrapper.association.Phase_Template__r.Phase_Name__c"></p>
+									    </div>
+								  	</div>
+			    				</div>
+			    			</dd>
+			    			<dd>
+			    				<button ng-if="templateEditMode && (!phaseWrapper.taskWrappers || phaseWrapper.taskWrappers.length == 0)" class="slds-button slds-button--neutral" ng-click="showAddTaskModal(indexPhase, 0)">Add Task</button>
+				    			<ul class="task-components tasks-phase-{{phaseWrapper.association.Phase_Template__c}}" task-sortable>
+				    				<li class="task-component" ng-repeat="(indexTask, taskWrapper) in phaseWrapper.taskWrappers" task>
+					    				<div class="slds-box task-component-container background-task {{templateEditMode ? 'task-component-adder' : ''}}" task-container>
+					    					<div class="edit-component-corner-container">
+						    					<button class="slds-button edit-component-corner-button" task-edit>
+						    						<svg aria-hidden="true" class="edit-component-corner-button-icon slds-button__icon slds-button__icon--large slds-button__icon--inverse slds-icon-action-edit ie-edit2-icon">
+												    	<use xlink:href="{{xlinkHelper.edit2}}"></use>
+												  	</svg>
+						    					</button>
+					    					</div>
+					    					<div class="add-component-above-container">
+						    					<button class="slds-button add-component-above-button" ng-click="showAddTaskModal(indexPhase, indexTask)">
+												  	<svg aria-hidden="true" class="slds-button__icon slds-button__icon--small slds-button__icon--inverse ie-add-icon">
+												    	<use xlink:href="{{xlinkHelper.add}}"></use>
+												  	</svg>
+												</button>
+											</div>
+											<div class="slds-media slds-tile">
+								                <div class="slds-media__body">
+								                	<p class="slds-tile__title slds-truncate" ng-bind-html="taskWrapper.association.Task_Template__r.Task_Name__c"></p>
+								                	<p class="slds-text-body--small task-description" ng-bind-html="taskWrapper.association.Task_Template__r.Description__c"></p>
+								                	<div class="slds-tile__detail slds-text-body--small">
+								                		<dl class="dl--horizontal" ng-if="taskWrapper.association.Target_Date_Based_On__c">
+							                      			<dt class="slds-dl--horizontal__label">Target Date:</dt>
+							                      			<dd class="slds-dl--horizontal__detail">
+								                      			<span ng-if="taskWrapper.association.Target_Date_Based_On__c == 'List Creation Date'">List Creation Date</span>
+								                      			<span ng-if="taskWrapper.association.Target_Date_Based_On__c == 'Plan Date Field'">Plan Field: <i>{{taskWrapper.association.Target_Date_Plan_Date_Field__c}}</i></span>
+								                      			<span ng-if="taskWrapper.association.Target_Date_Based_On__c == 'Task Completion Date'">Task Completion: <i>{{taskWrapper.targetDateTaskIndex | changeTaskNumberToName:taskList}}</i></span>
+								                      			<span ng-if="taskWrapper.association.Target_Date_Additional_Days__c > 0"> +{{taskWrapper.association.Target_Date_Additional_Days__c}} days</span>
+								                      			<span ng-if="taskWrapper.association.Target_Date_Additional_Days__c < 0"> {{taskWrapper.association.Target_Date_Additional_Days__c}} days</span>
+							                      			</dd>
+							                    		</dl>
+							                    		<dl class="dl--horizontal" ng-if="taskWrapper.prereqTaskIndex">
+							                      			<dt class="slds-dl--horizontal__label">Prerequisite Task:</dt>
+							                      			<dd class="slds-dl--horizontal__detail">{{taskWrapper.prereqTaskIndex | changeTaskNumberToName:taskList}}</dd>
+							                    		</dl>
+							                    		<dl class="dl--horizontal">
+							                      			<dt class="slds-dl--horizontal__label">Group Responsible:</dt>
+							                      			<dd class="slds-dl--horizontal__detail" ng-bind-html="taskWrapper.association.Task_Template__r.Group_Responsible__c"></dd>
+							                      			<dt class="slds-dl--horizontal__label">Statuses:</dt>
+							                      			<dd class="slds-dl--horizontal__detail">{{taskWrapper.association.Task_Template__r.Statuses__c}}</dd>
+							                      			<dt class="slds-dl--horizontal__label">Editing Roles:</dt>
+							                      			<dd class="slds-dl--horizontal__detail">{{taskWrapper.association.Task_Template__r.Editing_Roles__c}}</dd>
+							                    		</dl>
+								                	</div>
+								              	</div>
+							              	</div>
+								            <div class="delete-component-corner-container">
+						    					<button class="slds-button delete-component-corner-button" task-delete>
+						    						<svg aria-hidden="true" class="delete-component-corner-button-icon slds-button__icon slds-button__icon--large slds-button__icon--inverse slds-icon-action-delete ie-delete-icon">
+												    	<use xlink:href="{{xlinkHelper.delete}}"></use>
+												  	</svg>
+						    					</button>
+					    					</div>
+								            <div class="add-component-below-container">
+						    					<button class="slds-button add-component-below-button" ng-click="showAddTaskModal(indexPhase, indexTask + 1)">
+												  	<svg aria-hidden="true" class="slds-button__icon slds-button__icon--small slds-button__icon--inverse ie-add-icon">
+												    	<use xlink:href="{{xlinkHelper.add}}"></use>
+												  	</svg>
+												</button>
+											</div>
+								    	</div>
+						    		</li>
+				    			</ul>
+			    			</dd>
+			            </dl>
+			            <div class="delete-component-corner-container">
+	    					<button class="slds-button delete-component-corner-button" phase-delete>
+	    						<svg aria-hidden="true" class="delete-component-corner-button-icon slds-button__icon slds-button__icon--large slds-button__icon--inverse slds-icon-action-delete ie-delete-icon">
+							    	<use xlink:href="{{xlinkHelper.delete}}"></use>
+							  	</svg>
+	    					</button>
+    					</div>
+			            <div class="add-component-below-container">
+	    					<button class="slds-button add-component-below-button" ng-click="showAddPhaseModal(indexPhase + 1)">
+							  	<svg aria-hidden="true" class="slds-button__icon slds-button__icon--small slds-button__icon--inverse ie-add-icon">
+							    	<use xlink:href="{{xlinkHelper.add}}"></use>
+							  	</svg>
+							</button>
+						</div>
+			    	</div>
+	    		</li>
+		    </ul>
+	    </div>
+    </div>
+</div>

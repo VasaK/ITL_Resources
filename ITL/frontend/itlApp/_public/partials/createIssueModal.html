@@ -1,0 +1,114 @@
+<div ng-controller="createIssueModalController">
+	<div aria-hidden="false" role="dialog" class="slds-modal slds-modal--large slds-fade-in-open">
+	    <div class="slds-modal__container">
+	    	<div class="slds-modal__header">
+	        	<h2 class="slds-text-heading--medium">Create Issue</h2>
+	      	</div>
+	      	<div class="slds-modal__content">
+	      		<div>
+	      			<span class="form-error" ng-show="formValidator.form.error">{{formValidator.form.message}}</span>
+	      		</div>
+	        	<div>
+	        		<div class="slds-grid slds-wrap">
+		        		<div class="slds-form-element slds-col slds-sizing--1-of-3">
+		        			<label class="slds-form-element__label"><span class="required-field">* </span>Discovered:</label>
+		        			<div class="slds-form-element__control">
+		        				<input type="text" ng-model="issueWrapper.issue.Discovered__c" class="slds-input" date-picker/>
+		        				<span class="form-error" ng-show="formValidator.Discovered__c.error">{{formValidator.Discovered__c.message}}</span>
+		        			</div>
+		        		</div>
+		        		<div class="slds-form-element slds-col slds-sizing--1-of-3"></div>
+		        		<div class="slds-form-element slds-col slds-sizing--1-of-3">
+		        			<label class="slds-form-element__label"><span class="required-field">* </span>Resolved:</label>
+		        			<div class="slds-form-element__control">
+		        				<input type="text" ng-model="issueWrapper.issue.Resolved__c" class="slds-input" date-picker/>
+		        				<span class="form-error" ng-show="formValidator.Resolved__c.error">{{formValidator.Resolved__c.message}}</span>
+		        			</div>
+		        		</div>
+		        		<div class="slds-form-element slds-col slds-sizing--1-of-1">
+							<label class="slds-form-element__label"><span class="required-field">* </span>Categories:</label>
+							<div class="slds-grid slds-wrap">
+								<div class="slds-col slds-size--1-of-3">
+									<label class="slds-checkbox">
+										<input type="checkbox" ng-model="issueHelper['Compliance testing issue / error']"/>
+										<span class="slds-checkbox--faux"></span>
+										<span class="slds-form-element__label">Compliance testing issue / error</span>
+									</label>
+								</div>
+								<div class="slds-col slds-size--1-of-3">
+									<label class="slds-checkbox">
+										<input type="checkbox" ng-model="issueHelper['Distribution Loan issue / error']"/>
+										<span class="slds-checkbox--faux"></span>
+										<span class="slds-form-element__label">Distribution Loan issue / error</span>
+									</label>
+								</div>
+								<div class="slds-col slds-size--1-of-3">
+									<label class="slds-checkbox">
+										<input type="checkbox" ng-model="issueHelper['Inappropriate question/request for data']"/>
+										<span class="slds-checkbox--faux"></span>
+										<span class="slds-form-element__label">Inappropriate question/request for data</span>
+									</label>
+								</div>
+								<div class="slds-col slds-size--1-of-3">
+									<label class="slds-checkbox">
+										<input type="checkbox" ng-model="issueHelper['Incorrect infomation provided']"/>
+										<span class="slds-checkbox--faux"></span>
+										<span class="slds-form-element__label">Incorrect infomation provided</span>
+									</label>
+								</div>
+								<div class="slds-col slds-size--1-of-3">
+									<label class="slds-checkbox">
+										<input type="checkbox" ng-model="issueHelper['Lost paperwork information']"/>
+										<span class="slds-checkbox--faux"></span>
+										<span class="slds-form-element__label">Lost paperwork information</span>
+									</label>
+								</div>
+								<div class="slds-col slds-size--1-of-3">
+									<label class="slds-checkbox">
+										<input type="checkbox" ng-model="issueHelper['Non response / Insufficient response']"/>
+										<span class="slds-checkbox--faux"></span>
+										<span class="slds-form-element__label">Non response / Insufficient response</span>
+									</label>
+								</div>
+								<div class="slds-col slds-size--1-of-3">
+									<label class="slds-checkbox">
+										<input type="checkbox" ng-model="issueHelper['Plan document issue / error']"/>
+										<span class="slds-checkbox--faux"></span>
+										<span class="slds-form-element__label">Plan document issue / error</span>
+									</label>
+								</div>
+								<div class="slds-col slds-size--1-of-3">
+									<label class="slds-checkbox">
+										<input type="checkbox" ng-model="issueHelper['Termination/Deconversion issue/error']"/>
+										<span class="slds-checkbox--faux"></span>
+										<span class="slds-form-element__label">Termination/Deconversion issue/error</span>
+									</label>
+								</div>
+								<div class="slds-col slds-size--1-of-3">
+									<label class="slds-checkbox">
+										<input type="checkbox" ng-model="issueHelper.Other"/>
+										<span class="slds-checkbox--faux"></span>
+										<span class="slds-form-element__label">Other</span>
+									</label>
+								</div>
+							</div>
+							<span class="form-error" ng-show="formValidator.Issue_Categories__c.error">{{formValidator.Issue_Categories__c.message}}</span>
+						</div>
+						<div class="slds-form-element slds-col slds-sizing--1-of-1">
+							<label class="slds-form-element__label"><span class="required-field">* </span>Details:</label>
+							<div class="slds-form-element__control">
+								<textarea class="slds-textarea" ng-model="issueWrapper.issue.Details__c" maxlength="32768"></textarea>
+								<span class="form-error" ng-show="formValidator.Details__c.error">{{formValidator.Details__c.message}}</span>
+							</div>
+						</div>
+	        		</div>
+	        	</div>
+	      	</div>
+	      	<div class="slds-modal__footer slds-modal__footer--directional">
+	        	<button class="slds-button slds-button--neutral" ng-click="cancel()">Cancel</button>
+	        	<button class="slds-button slds-button--brand" ng-click="saveIssue()">Save</button>
+	      	</div>
+	    </div>
+  	</div>
+  	<div class="slds-modal-backdrop slds-modal-backdrop--open"></div>
+</div>

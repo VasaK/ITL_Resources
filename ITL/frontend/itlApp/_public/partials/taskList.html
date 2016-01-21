@@ -1,0 +1,254 @@
+<div>
+	<div ng-if="spinner.display">
+	  	<div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open loading-modal">
+	    	<div class="slds-modal__container">
+	      		<div class="slds-modal__header">
+	      			<div class="slds-spinner--large centered-spinner">
+					  	<img ng-src="{{resourceUrl}}/images/spinners/slds_spinner_brand.gif" alt="Loading..." />
+					</div>
+	        		<h2 class="slds-text-heading--medium">Loading...</h2>
+	      		</div>
+	    	</div>
+	  	</div>
+	  	<div class="slds-modal-backdrop slds-modal-backdrop--open loading-modal-backdrop"></div>
+	</div>
+	<div ng-if="displayListCompletionWarning">
+		<div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open">
+		    <div class="slds-modal__container">
+		    	<div class="slds-modal__header">
+		        	<h2 class="slds-text-heading--medium">Warning</h2>
+		      	</div>
+		      	<div class="slds-modal__content">
+		        	<div>
+		          		<p class="slds-text-body--medium">If you proceed, the installation task list will no longer be editable.</p>
+		        	</div>
+		      	</div>
+		      	<div class="slds-modal__footer slds-modal__footer--directional">
+		        	<button class="slds-button slds-button--neutral" ng-click="cancelListCompletion()">Cancel</button>
+		        	<button class="slds-button slds-button--brand" ng-click="saveListCompletion()">Continue</button>
+		      	</div>
+		    </div>
+	  	</div>
+	  	<div class="slds-modal-backdrop slds-modal-backdrop--open"></div>
+	</div>
+	<div class="slds-box list-completion-error" ng-show="listMessage">
+		<span ng-bind-html="listMessage"></span>
+	</div>
+	<div class="slds-page-header">
+	    <div class="slds-grid">
+	        <div class="slds-col slds-has-flexi-truncate">
+	            <div class="slds-media">
+	            	<div class="slds-media__figure">
+			          	<svg aria-hidden="true" class="slds-icon slds-icon--large slds-icon-standard-record ie-record-icon">
+			            	<use xlink:href="{{xlinkHelper.record}}"></use>
+			          	</svg>
+			        </div>
+	                <div class="slds-media__body">
+	                	<p class="slds-text-heading--label">Installation Task List</p>
+	                    <div class="slds-grid">
+	                        <h1 class="slds-text-heading--medium slds-m-right--small slds-truncate slds-align-middle" ng-bind-html="listWrapper.taskList.List_Name__c"></h1>
+	                        <div class="slds-col slds-shrink-none">
+				              	<button class="slds-button slds-button--neutral" aria-live="assertive" ng-click="warnListCompletion()" ng-hide="listWrapper.taskList.Completed__c">
+				                	<span>
+				                  		<svg aria-hidden="true" class="slds-button__icon--stateful slds-button__icon--left ie-check-icon">
+				                    		<use xlink:href="{{xlinkHelper.check}}"></use>
+				                  		</svg>Complete</span>
+				              	</button>
+				            </div>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	        <div class="slds-col slds-no-flex slds-align-bottom">
+	            <div class="slds-form--inline">
+	            	<div class="slds-form-element">
+	            		<label class="slds-form-element__label">View List:</label>
+	            		<div class="slds-form-element__control">
+		            		<select class="slds-select" ng-model="vars.taskListId" ng-change="switchLists()">
+		            			<option ng-repeat="v_taskList in allTaskLists" value="{{v_taskList.Id}}" ng-bind-html="v_taskList.List_Name__c + ' - ' + (v_taskList.CreatedDate | convertToDateString)">
+		            		</select>
+	            		</div>
+	            	</div>
+	            </div>
+	        </div>
+	    </div>
+	    <div class="slds-grid slds-page-header__detail-row">
+		    <div class="slds-col--padded slds-size--1-of-3">
+		      	<dl>
+		        	<dt>
+		          		<p class="slds-truncate">Plan</p>
+		        	</dt>
+		        	<dd>
+		          		<a class="slds-text-body--regular slds-truncate" ng-click="goToPlan()" ng-bind-html="listWrapper.planName"></a>
+		        	</dd>
+		      	</dl>
+		    </div>
+		    <div class="slds-col--padded slds-size--1-of-3">
+		      	<dl>
+		        	<dt>
+		          		<p class="slds-truncate">Service Effective Date</p>
+		        	</dt>
+		        	<dd>
+		          		<p class="slds-text-body--regular slds-truncate">{{listWrapper.taskList.Plan__r.Service_Effective_Date__c | convertToDateString}}</p>
+		        	</dd>
+		      	</dl>
+		    </div>
+		    <div class="slds-col--padded slds-size--1-of-3">
+		      	<dl>
+		        	<dt>
+		          		<p class="slds-truncate">Completed</p>
+		        	</dt>
+		        	<dd>
+		          		<p class="slds-text-body--regular slds-truncate" ng-if="listWrapper.taskList.Completed__c">Yes</p>
+		          		<p class="slds-text-body--regular slds-truncate" ng-if="!listWrapper.taskList.Completed__c">No</p>
+		        	</dd>
+		      	</dl>
+		    </div>
+	  	</div>
+    </div>
+    <div>
+	    <div class="slds-grid slds-wrap">
+		    <div class="slds-col slds-size--1-of-3 list-panel" window-height>
+		    	<div ng-if="listWrapper.phaseWrappers.length > 0" ng-repeat="(indexPhase, phaseWrapper) in listWrapper.phaseWrappers">
+					<div class="slds-text-heading--small phase-heading" ng-bind-html="phaseWrapper.phase.Phase_Name__c" phase-collapse></div>
+					<ul class="slds-timeline">
+					  	<li class="slds-timeline__item task-item" ng-repeat="(indexTask, taskWrapper) in phaseWrapper.taskWrappers" ng-click="displayTaskDetails(taskWrapper)">
+					    	<div class="slds-media slds-media--reverse">
+					      		<div class="slds-media__figure">
+					        		<div class="slds-timeline__actions">
+					          			<p class="slds-timeline__date date-badge-container">
+					          				<span ng-if="taskWrapper.task.Target_Date__c && taskWrapper.businessDaysLeft > 0 && taskWrapper.businessDaysLeft <= 3 && !taskWrapper.task.Completion_Date__c && !listWrapper.taskList.Completed__c" class="slds-badge slds-theme--default yellow-date-badge">{{taskWrapper.task.Target_Date__c | convertToDateString}}</span>
+					          				<span ng-if="taskWrapper.task.Target_Date__c && taskWrapper.businessDaysLeft == 0 && !taskWrapper.task.Completion_Date__c && !listWrapper.taskList.Completed__c" class="slds-badge slds-theme--inverse red-date-badge">{{taskWrapper.task.Target_Date__c | convertToDateString}}</span>
+					          				<span ng-if="taskWrapper.task.Target_Date__c && (taskWrapper.businessDaysLeft > 3 || taskWrapper.task.Completion_Date__c || listWrapper.taskList.Completed__c)" class="slds-badge slds-theme--default">{{taskWrapper.task.Target_Date__c | convertToDateString}}</span>
+		                      			</p>
+					        		</div>
+					      		</div>
+					      		<div class="slds-media__body">
+					        		<div class="slds-media slds-media--timeline slds-timeline__media--task {{taskWrapper.task.Completion_Date__c ? 'completed-timeline-line' : (taskWrapper.task.Group_Responsible__c == 'RPS' ? 'rps-timeline-line' : 'cbt-timeline-line')}}">
+					          			<div class="slds-media__figure">
+					            			<svg aria-hidden="true" class="slds-icon slds-icon-standard-task slds-timeline__icon ie-task-icon {{taskWrapper.task.Group_Responsible__c == 'RPS' ? 'rps-task-icon' : 'cbt-task-icon'}}" ng-hide="taskWrapper.task.Completion_Date__c">
+					              				<use xlink:href="{{xlinkHelper.task}}"></use>
+					            			</svg>
+					            			<svg aria-hidden="true" class="slds-icon slds-icon-standard-task slds-timeline__icon ie-approval-icon completed-task-icon" ng-show="taskWrapper.task.Completion_Date__c">
+					              				<use xlink:href="{{xlinkHelper.approval}}"></use>
+					            			</svg>
+					          			</div>
+				          				<div class="slds-media__body">
+					            			<div class="slds-media slds-tile slds-media--small">
+					              				<div class="slds-media__body">
+					                				<p class="slds-tile__title slds-truncate {{taskWrapper.task.Group_Responsible__c == 'RPS' ? 'rps-task-text' : 'cbt-task-text'}}" ng-bind-html="taskWrapper.task.Task_Name__c"></p>
+					              				</div>
+					            			</div>
+					          			</div>
+					        		</div>
+					      		</div>
+					    	</div>
+					  	</li>
+				  	</ul>
+			  	</div>
+		    </div>
+		    <div class="slds-col slds-size--2-of-3" window-height>
+			    <div ng-if="taskWrapperDetail.task" class="task-detail">
+			    	<div class="slds-box prereq-task-error" ng-show="taskDetailMessage">
+			    		<span ng-bind-html="taskDetailMessage"></span>
+			    	</div>
+			    	<p class="slds-text-heading--small phase-heading" ng-bind-html="taskWrapperDetail.phaseName"></p>
+			    	<div>
+			    		<h1 class="slds-text-heading--medium slds-m-right--small slds-truncate slds-align-middle {{taskWrapperDetail.task.Group_Responsible__c == 'RPS' ? 'rps-task-text' : 'cbt-task-text'}}" ng-bind-html="taskWrapperDetail.task.Task_Name__c"></h1>
+			    	</div>
+			    	<div class="slds-grid slds-wrap">
+			    		<div class="slds-form-element slds-col slds-size--1-of-2 task-detail-target-date">
+			    			<label class="slds-form-element__label">Target Date:</label>
+			    			<div class="slds-form-element__control">
+			    				<input type="text" class="slds-input" ng-model="taskWrapperDetailHelper.Target_Date__c" ng-if="taskWrapperDetail.canEdit" date-picker ng-change="updateTaskTargetDate()"/>
+			    				<p class="slds-text-body--medium" ng-if="!taskWrapperDetail.canEdit && taskWrapperDetail.task.Target_Date__c">{{taskWrapperDetail.task.Target_Date__c | convertToDateString}}</p>
+			    				<p class="slds-text-body--medium" ng-if="!taskWrapperDetail.canEdit && !taskWrapperDetail.task.Target_Date__c">N/A</p>
+			    			</div>
+			    			<span class="form-error" ng-show="formValidator.Target_Date__c.error">{{formValidator.Target_Date__c.message}}</span>
+			    		</div>
+			    		<div class="slds-form-element slds-col slds-size--1-of-2">
+			    			<label class="slds-form-element__label">Status:</label>
+			    			<div class="slds-form-element__control">
+				    			<select class="slds-select" ng-model="taskWrapperDetail.task.Status__c" ng-if="taskWrapperDetail.canEdit" ng-change="updateTaskStatus()">
+						        	<option ng-repeat="status in taskWrapperDetail.task.Available_Statuses__c | picklistTransform">{{status}}</option>
+						        </select>
+						        <p class="slds-text-body--medium" ng-if="!taskWrapperDetail.canEdit">{{taskWrapperDetail.task.Status__c}}</p>
+					        </div>
+			    		</div>
+			    		<div ng-if="taskWrapperDetail.completedBy && taskWrapperDetail.task.Completion_Date__c" class="slds-form-element slds-col slds-size--1-of-2 task-detail-completion-date">
+			    			<label class="slds-form-element__label">Completion Date:</label>
+			    			<div class="slds-form-element__control">
+			    				<p class="slds-text-body--medium">{{taskWrapperDetail.task.Completion_Date__c | convertToDateString}}</p>
+			    			</div>
+			    		</div>
+			    		<div ng-if="taskWrapperDetail.completedBy && taskWrapperDetail.task.Completion_Date__c" class="slds-form-element slds-col slds-size--1-of-2">
+			    			<label class="slds-form-element__label">Completed By:</label>
+			    			<div class="slds-form-element__control">
+						        <p class="slds-text-body--medium" ng-bind-html="taskWrapperDetail.completedBy"></p>
+					        </div>
+			    		</div>
+			    		<div class="slds-form-element slds-col slds-size--1-of-1">
+			    			<label class="slds-form-element__label">Description:</label>
+			    			<div class="slds-form-element__control">
+			    				<p class="slds-text-body--medium nonedit-task-description" ng-bind-html="taskWrapperDetail.task.Description__c"></p>
+			    			</div>
+			    		</div>
+			    	</div>
+				  	<div class="slds-grid slds-wrap notes-heading-container">
+				    	<div class="slds-media slds-media--center slds-has-flexi-truncate">
+				      		<div class="slds-media__figure">
+				        		<svg aria-hidden="true" class="slds-icon slds-icon-standard-contact slds-icon--small ie-note-icon">
+				          			<use xlink:href="{{xlinkHelper.note}}"></use>
+				        		</svg>
+				      		</div>
+				      		<div class="slds-media__body">
+			        			<h2 class="slds-text-heading--medium slds-truncate">Notes</h2>
+				      		</div>
+				    	</div>
+				    	<div class="slds-no-flex">
+				      		<div class="slds-button-group">
+				        		<button class="slds-button slds-button--neutral slds-button--small" ng-click="newNote(taskWrapperDetail.task.Id)" ng-if="taskWrapperDetail.canCreateNotes">New Note</button>
+				      		</div>
+				    	</div>
+				  	</div>
+				  	<h3 class="slds-text-heading--small" ng-hide="taskWrapperDetail.noteWrappers.length > 0">No Related Notes</h3>
+			    	<table class="slds-table slds-table--bordered" ng-show="taskWrapperDetail.noteWrappers.length > 0">
+			      		<thead>
+			        		<tr class="slds-text-heading--label">
+			          			<th class="slds-text-heading--label slds-size--1-of-6" scope="col">Created</th>
+			          			<th class="slds-text-heading--label slds-size--1-of-6" scope="col">Last Modified</th>
+			          			<th class="slds-text-heading--label slds-size--1-of-6" scope="col">Subject</th>
+			          			<th class="slds-text-heading--label slds-size--1-of-6" scope="col">Reason</th>
+			          			<th class="slds-text-heading--label slds-size--1-of-6 slds-cell-shrink" scope="col">Issues</th>
+			          			<th class="slds-text-heading--label slds-size--1-of-6 slds-cell-shrink" scope="col">Types</th>
+			        		</tr>
+			      		</thead>
+			      		<tbody>
+			        		<tr class="slds-hint-parent slds-text-body--small note-row" ng-repeat="noteWrapper in taskWrapperDetail.noteWrappers" ng-click="viewNote(noteWrapper, taskWrapperDetail.canCreateNotes)">
+			          			<td class="slds-size--1-of-6" data-label="Created">
+			          				<span>{{noteWrapper.note.CreatedDate | convertToDateString}}<br/>{{noteWrapper.creator}}</span>
+			          			</td>
+			          			<td class="slds-size--1-of-6" data-label="Last Modified">
+			          				<span>{{noteWrapper.note.LastModifiedDate | convertToDateString}}<br/>{{noteWrapper.modifier}}</span>
+			          			</td>
+			          			<td class="slds-size--1-of-6 slds-cell-wrap" data-label="Subject">
+			          				<span ng-bind-html="noteWrapper.note.Subject__c"></span>
+			          			</td>
+			          			<td class="slds-size--1-of-6" data-label="Reason">
+			          				<span ng-bind-html="noteWrapper.note.Reason__c"></span>
+			          			</td>
+			          			<td class="slds-size--1-of-6 slds-cell-shrink" data-label="Issues">
+			          				<span>{{noteWrapper.note.Service_Issue_Count__c}}</span>
+			          			</td>
+			          			<td class="slds-size--1-of-6 slds-cell-shrink" data-label="Types">
+			          				<span>{{noteWrapper.textWrappers | abbreviateNoteTypes}}</span>
+			          			</td>
+			        		</tr>
+			      		</tbody>
+		    		</table>
+		    		<div ng-show="displayNoteModal" ng-include="noteModalTemplate"></div>
+		    	</div>
+	    	</div>
+	    </div>
+    </div>
+</div>

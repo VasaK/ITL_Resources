@@ -1,0 +1,522 @@
+html {
+	background: rgba(0, 0, 0, 0);
+}
+
+.itlApp-container {
+	padding: 1rem;
+
+	label {
+		font-weight: normal;
+	}
+
+	.slds-form-element {
+		margin-top: 0.5rem;
+	}
+
+	#component-list-panel {
+		width: 450px;
+		position: absolute;
+		left: -450px;
+		padding: 1rem;
+	}
+
+	.component-list {
+		overflow: auto;
+		border: 1px solid #d8dde6;
+		border-radius: 0.25rem;
+	    padding-top: 20px;
+    	padding-bottom: 20px;
+	}
+
+	#template-panel {
+		margin-left: 0px;
+	}
+
+	.components-button-section {
+		text-align: right;
+		margin-bottom: 10px;
+		margin-top: 10px;
+	}
+
+	.template-components {
+		min-height: 700px;
+		border: 1px solid #d8dde6;
+		border-radius: 0.25rem;
+	}
+
+	.task-components {
+	    min-height: 100px;
+    	background-color: white;
+    	margin-top: 10px;
+    	border: 1px solid #d8dde6;
+		border-radius: 0.25rem;
+	}
+
+	.list-panel {
+		border-right: 1px solid #d8dde6;
+	}
+
+	.cbt-timeline-line {
+		border-left-color: #007AA5;
+	}
+
+	.cbt-task-icon {
+		background-color: #007AA5;
+	}
+
+	.cbt-task-text {
+		color: #007AA5;
+	}
+
+	.rps-timeline-line {
+		/*border-left-color: #696e71;*/
+		border-left-color: black;
+	}
+
+	.rps-task-icon {
+		/*background-color: #696e71;*/
+		background-color: black;
+	}
+
+	.rps-task-text {
+		color: black;
+	}
+
+	.completed-task-icon {
+		background-color: #4bc076;
+		padding: 2px;
+	}
+
+	.completed-timeline-line {
+		border-left-color: #4bc076;
+	}
+
+	.phase-heading {
+		margin-top: 20px;
+		margin-bottom: 20px;
+		cursor: pointer;
+	}
+
+	.nonedit-task-description {
+		margin-bottom: 5px;
+	}
+
+	.task-description {
+		margin-bottom: 10px;
+	}
+
+	.available-component {
+		margin-bottom: 5px;
+	}
+
+	.background-task {
+		background-color: rgb(238, 241, 246);
+	}
+
+	.background-phase {
+		background-color: #D2E0FF;
+	}
+
+	.template-component-adder:hover {
+		border: 1px solid #006eb3;
+	}
+
+	.add-component-above-button {
+		background-color: #006eb3;
+		width: 1.5rem;
+		height: 1.5rem;
+		line-height: 1.5rem;
+		position: absolute;
+		display: none;
+	}
+
+	.add-component-below-button {
+		background-color: #006eb3;
+		width: 1.5rem;
+		height: 1.5rem;
+		line-height: 1.5rem;
+		position: absolute;
+		display: none;
+	}
+
+	.add-component-above-container {
+	    position: relative;
+	    top: -29px;
+	    text-align: center;
+	}
+
+	.add-component-below-container {
+	    position: relative;
+	    text-align: center;
+	    bottom: -4px;
+	}
+
+	.delete-component-corner-button {
+		position: absolute;
+		display: none;
+	}
+
+	.delete-component-corner-container {
+		position: relative;
+		bottom: -4px;
+		left: -25px;
+	}
+
+	.delete-component-corner-button-icon {
+		padding: 2px;
+		border-radius: .25rem;
+	}
+
+	.edit-component-corner-button {
+		position: absolute;
+		display: none;
+	}
+
+	.edit-component-corner-container {
+		position: relative;
+		top: -29px;
+		left: -25px;
+	}
+
+	.edit-component-corner-button-icon {
+		padding: 2px;
+		border-radius: .25rem;
+	}
+
+	.recurring-fieldset {
+	    border: 1px solid #c0c0c0;
+	    margin: 0 2px;
+	    padding: 0.35em 0.625em 0.75em;
+	}
+
+	.component-search-container {
+		margin-bottom: 15px;
+	}
+
+	.loading-modal {
+		z-index: 9010;
+	}
+
+	.loading-modal-backdrop {
+		z-index: 9009;
+	}
+
+	.tab-icon {
+		margin-top: 10px;
+	}
+
+	hr.header-hr {
+	    border-top: 6px solid rgb(34, 148, 227);
+	    margin-bottom: 0px;
+	}
+
+	.header-bold {
+		font-weight: bold;
+	}
+
+	.form-error {
+	    color: #c23934;
+	}
+
+	.required-field {
+		color: rgb(212, 80, 76);
+	}
+
+	.page-footer {
+		margin-top: 20px;
+	}
+
+	.slds-timeline ul li {
+		margin-left: 0px;
+	}
+
+	.task-item {
+		padding-left: 0px;
+
+		&:hover {
+			background-color: rgb(240, 248, 252);
+			cursor: pointer;
+		}
+	}
+
+	.completed-task {
+		text-decoration: line-through;
+	}
+
+	.task-detail {
+		margin-left: 20px;
+		margin-right: 20px;
+	}
+
+	a {
+		color: #0070d2;
+
+		&:hover {
+			cursor: pointer;
+		}
+	}
+
+	.slds-tabs--default__nav a {
+	    color: #54698d;
+	}
+
+	.date-badge-container {
+		margin-top: 0.25rem;
+	}
+
+	.yellow-date-badge {
+		background-color: rgb(255, 183, 93);
+	}
+
+	.red-date-badge {
+		background-color: rgb(212, 80, 76);
+	}
+
+	.prereq-task-error, .list-completion-error {
+		background-color: rgb(255, 221, 225);
+    	color: rgb(194, 57, 52);
+    	border-color: rgb(194, 57, 52);
+	}
+
+	.prereq-task-error {
+		margin-top: 20px;
+	}
+
+	.list-completion-error {
+		margin-bottom: 20px;
+	}
+
+	.notes-heading-container {
+		margin-top: 80px;
+		margin-bottom: 20px;
+	}
+
+	.note-row:hover {
+		cursor: pointer;
+	}
+
+	#note-text--tab {
+		margin-left: 0px;
+		margin-right: 0px;
+
+		a {
+			padding: 0 1rem;
+		}
+	}
+
+	#service-issue--tab {
+		margin-left: 1.5rem;
+		margin-right: 0px;
+
+		a {
+			padding: 0 1rem;
+		}
+	}
+
+	.notes-related-lists {
+		margin-top: 20px;
+	}
+
+	.text-list-item {
+		margin-left: 0px;
+		margin-right: 0px;
+	}
+
+	.service-issue-row {
+		cursor: pointer;
+	}
+
+	.task-detail-target-date, .task-detail-completion-date {
+		padding-right: 30px;
+	}
+
+	.formatted-text {
+		white-space: pre-wrap;
+	}
+
+}
+
+.ui-state-highlight { 
+	height: 1.5em; 
+	line-height: 1.2em; 
+}
+
+ul li {
+	margin-left: 1.5em;
+	margin-right: 1.5em;
+}
+
+.centered-spinner {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.ta-editor.ta-html, .ta-scroll-window.form-control {
+	height: 150px;
+	min-height: 0px;
+}
+
+html .itlApp-container {
+	font: 100%/1.5 "Salesforce Sans", Arial, sans-serif;
+}
+
+body .itlApp-container, td .itlApp-container {
+	font: 100%/1.5 "Salesforce Sans", Arial, sans-serif;
+}
+
+.contact-lookup-menu {
+	z-index: 9002;
+}
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {  
+   /* IE10+ specific styles go here */  
+   .add-component-above-container {
+	    left: 50%;
+	}
+
+	.add-component-below-container {
+	    left: 50%;
+	}
+
+	.ie-edit-icon {
+		background-image: url('../icons/utility/edit.svg');
+		background-size: 15px;
+		background-position: center;
+		background-repeat: no-repeat;
+		width: 17px;
+		height: 17px;
+		background-color: #005fb2;
+	}
+
+	.ie-check-icon {
+		background-image: url('../icons/utility/check.svg');
+		background-size: 15px;
+		background-position: center;
+		background-repeat: no-repeat;
+		width: 17px;
+		height: 17px;
+		background-color: #005fb2;
+	}
+
+	.ie-contact-icon {
+		background-image: url('../icons/standard/contact.svg');
+		background-size: 25px;
+		background-position: center;
+		background-repeat: no-repeat;
+	}
+
+	.ie-close-icon {
+		background-image: url('../icons/utility/close.svg');
+		background-size: 15px;
+		background-position: center;
+		background-repeat: no-repeat;
+		width: 17px;
+		height: 17px;
+		background-color: #ef6e64;
+	}
+
+	.ie-down-icon {
+		background-image: url('../icons/utility/down.svg');
+		background-size: 15px;
+		background-position: center;
+		background-repeat: no-repeat;
+		width: 17px;
+		height: 17px;
+		background-color: rgb(128, 128, 128);
+	}
+
+	.ie-edit2-icon {
+		background-image: url('../icons/action/edit.svg');
+		background-size: 20px;
+		background-position: center;
+		background-repeat: no-repeat;
+	}
+
+	.ie-add-icon {
+		background-image: url('../icons/utility/add.svg');
+		background-size: 20px;
+		background-position: center;
+		background-repeat: no-repeat;
+	}
+
+	.ie-retweet-icon {
+		background-image: url('../icons/utility/retweet.svg');
+		background-size: 20px;
+		background-position: center;
+		background-repeat: no-repeat;
+	}
+
+	.ie-environment_hub-icon {
+		background-image: url('../icons/standard/environment_hub.svg');
+		background-size: 30px;
+		background-position: center;
+		background-repeat: no-repeat;
+	}
+
+	.ie-record-icon {
+		background-image: url('../icons/standard/record.svg');
+		background-size: 48px;
+		background-position: center;
+		background-repeat: no-repeat;
+	}
+
+	.ie-task-icon {
+		background-image: url('../icons/standard/task.svg');
+		background-size: 27px;
+		background-position: center;
+		background-repeat: no-repeat;
+	}
+
+	.ie-approval-icon {
+		background-image: url('../icons/action/approval.svg');
+		background-size: 27px;
+		background-position: center;
+		background-repeat: no-repeat;
+	}
+
+	.ie-note-icon {
+		background-image: url('../icons/standard/note.svg');
+		background-size: 25px;
+		background-position: center;
+		background-repeat: no-repeat;
+	}
+
+	.ie-delete-icon {
+		background-image: url('../icons/action/delete.svg');
+		background-size: 20px;
+		background-position: center;
+		background-repeat: no-repeat;
+	}
+
+	.ie-image-icon {
+		background-image: url('../icons/utility/image.svg');
+		background-size: 20px;
+		background-position: center;
+		background-repeat: no-repeat;
+		background-color: gray;
+	}
+
+	.ie-news-icon {
+		background-image: url('../icons/utility/news.svg');
+		background-size: 20px;
+		background-position: center;
+		background-repeat: no-repeat;
+		background-color: gray;
+	}
+
+	.ie-left-align-text-icon {
+		background-image: url('../icons/utility/left_align_text.svg');
+		background-size: 20px;
+		background-position: center;
+		background-repeat: no-repeat;
+		background-color: gray;
+	}
+
+	.ie-help-icon {
+		background-image: url('../icons/utility/help.svg');
+		background-size: 20px;
+		background-position: center;
+		background-repeat: no-repeat;
+		background-color: gray;
+	}
+}

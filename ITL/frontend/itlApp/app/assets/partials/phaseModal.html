@@ -1,0 +1,30 @@
+<div ng-controller="phaseModalController">
+	<div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open">
+	    <div class="slds-modal__container">
+	    	<div class="slds-modal__header">
+	        	<h2 class="slds-text-heading--medium">Create/Edit Phase</h2>
+	      	</div>
+	      	<div class="slds-modal__content">
+	      		<div>
+	      			<span class="form-error" ng-show="formValidator.form.error">{{formValidator.form.message}}</span>
+	      		</div>
+	        	<div>
+	          		<div class="slds-form--stacked">
+	          			<div class="slds-form-element">
+							<label class="slds-form-element__label">Name:</label>
+							<div class="slds-form-element__control">
+								<input type="text" ng-model="modalPhase.Phase_Name__c" class="slds-input"/>
+								<span class="form-error" ng-show="formValidator.Phase_Name__c.error">{{formValidator.Phase_Name__c.message}}</span>
+							</div>
+						</div>
+					</div>
+	        	</div>
+	      	</div>
+	      	<div class="slds-modal__footer slds-modal__footer--directional">
+	        	<button class="slds-button slds-button--neutral" ng-click="cancelModalPhase()">Cancel</button>
+	        	<button class="slds-button slds-button--brand" ng-click="handleSaveModalPhase()">Save</button>
+	      	</div>
+	    </div>
+  	</div>
+  	<div class="slds-modal-backdrop slds-modal-backdrop--open"></div>
+</div>

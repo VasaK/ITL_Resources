@@ -1,0 +1,216 @@
+<div ng-controller="taskModalController">
+	<div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open">
+	    <div class="slds-modal__container">
+	    	<div class="slds-modal__header">
+	        	<h2 class="slds-text-heading--medium">Create/Edit Task</h2>
+	      	</div>
+	      	<div class="slds-modal__content">
+	      		<div>
+	      			<span class="form-error" ng-show="formValidator.form.error">{{formValidator.form.message}}</span>
+	      		</div>
+	        	<div ng-show="displayReusableAttributes">
+	        		<div class="slds-text-heading--medium">Reusable Attributes</div>
+	          		<div class="slds-form--stacked">
+	          			<div class="slds-form-element">
+							<label class="slds-form-element__label">Name:</label>
+							<div class="slds-form-element__control">
+								<input type="text" ng-model="modalTask.Task_Name__c" class="slds-input"/>
+								<span class="form-error" ng-show="formValidatorReusableAttributes.Task_Name__c.error">{{formValidatorReusableAttributes.Task_Name__c.message}}</span>
+							</div>
+						</div>
+						<div class="slds-form-element">
+							<label class="slds-form-element__label">Description:</label>
+							<div class="slds-form-element__control">
+								<textarea class="slds-textarea" ng-model="modalTask.Description__c"></textarea>
+								<span class="form-error" ng-show="formValidatorReusableAttributes.Description__c.error">{{formValidatorReusableAttributes.Description__c.message}}</span>
+							</div>
+						</div>
+						<div class="slds-form-element">
+							<label class="slds-form-element__label">Phase:</label>
+							<span class="slds-form-element__control">
+								<span ng-bind-html="modalTask.Phase_Template__r.Phase_Name__c"></span>
+							</span>
+						</div>
+						<div class="slds-form-element">
+							<label class="slds-form-element__label">Statuses:</label>
+							<div class="slds-form-element__control">
+								<select class="slds-select" ng-model="modalTask.Statuses__c">
+									<option value="">--Select--</option>
+									<option value="Not Completed;Completed">Not Completed, Completed</option>
+									<option value="Not Completed;Not Applicable;Completed">Not Completed, Not Applicable, Completed</option>
+									<option value="Not Reviewed;Reviewed">Not Reviewed, Reviewed</option>
+									<option value="Not Reviewed;Not Applicable;Reviewed">Not Reviewed, Not Applicable, Reviewed</option>
+								</select>
+								<span class="form-error" ng-show="formValidatorReusableAttributes.Statuses__c.error">{{formValidatorReusableAttributes.Statuses__c.message}}</span>
+							</div>
+						</div>
+						<div class="slds-form-element">
+							<label class="slds-form-element__label">Group Responsible:</label>
+							<div class="slds-form-element__control">
+								<select class="slds-select" ng-model="modalTask.Group_Responsible__c">
+									<option value="">--Select--</option>
+									<option>RPS</option>
+									<option>CB&T</option>
+								</select>
+								<span class="form-error" ng-show="formValidatorReusableAttributes.Group_Responsible__c.error">{{formValidatorReusableAttributes.Group_Responsible__c.message}}</span>
+							</div>
+						</div>
+						<div class="slds-form-element">
+							<label class="slds-form-element__label">Editing Roles:</label>
+							<div class="slds-grid slds-wrap">
+								<div class="slds-col slds-size--1-of-4">
+									<label class="slds-checkbox">
+										<input type="checkbox" ng-model="modalTaskHelper.BA"/>
+										<span class="slds-checkbox--faux"></span>
+										<span class="slds-form-element__label">BA</span>
+									</label>
+								</div>
+								<div class="slds-col slds-size--1-of-4">
+									<label class="slds-checkbox">
+										<input type="checkbox" ng-model="modalTaskHelper.BSA"/>
+										<span class="slds-checkbox--faux"></span>
+										<span class="slds-form-element__label">BSA</span>
+									</label>
+								</div>
+								<div class="slds-col slds-size--1-of-4">
+									<label class="slds-checkbox">
+										<input type="checkbox" ng-model="modalTaskHelper['CB&T Assoc']"/>
+										<span class="slds-checkbox--faux"></span>
+										<span class="slds-form-element__label">CB&T Assoc</span>
+									</label>
+								</div>
+								<div class="slds-col slds-size--1-of-4">
+									<label class="slds-checkbox">
+										<input type="checkbox" ng-model="modalTaskHelper['CB&T MGR']"/>
+										<span class="slds-checkbox--faux"></span>
+										<span class="slds-form-element__label">CB&T MGR</span>
+									</label>
+								</div>
+								<div class="slds-col slds-size--1-of-4">
+									<label class="slds-checkbox">
+										<input type="checkbox" ng-model="modalTaskHelper.HOST"/>
+										<span class="slds-checkbox--faux"></span>
+										<span class="slds-form-element__label">HOST</span>
+									</label>
+								</div>
+								<div class="slds-col slds-size--1-of-4">
+									<label class="slds-checkbox">
+										<input type="checkbox" ng-model="modalTaskHelper.IC"/>
+										<span class="slds-checkbox--faux"></span>
+										<span class="slds-form-element__label">IC</span>
+									</label>
+								</div>
+								<div class="slds-col slds-size--1-of-4">
+									<label class="slds-checkbox">
+										<input type="checkbox" ng-model="modalTaskHelper.MGR"/>
+										<span class="slds-checkbox--faux"></span>
+										<span class="slds-form-element__label">MGR</span>
+									</label>
+								</div>
+								<div class="slds-col slds-size--1-of-4">
+									<label class="slds-checkbox">
+										<input type="checkbox" ng-model="modalTaskHelper.RC"/>
+										<span class="slds-checkbox--faux"></span>
+										<span class="slds-form-element__label">RC</span>
+									</label>
+								</div>
+								<div class="slds-col slds-size--1-of-4">
+									<label class="slds-checkbox">
+										<input type="checkbox" ng-model="modalTaskHelper.RPAS"/>
+										<span class="slds-checkbox--faux"></span>
+										<span class="slds-form-element__label">RPAS</span>
+									</label>
+								</div>
+								<div class="slds-col slds-size--1-of-4">
+									<label class="slds-checkbox">
+										<input type="checkbox" ng-model="modalTaskHelper['RPOC/SCA']"/>
+										<span class="slds-checkbox--faux"></span>
+										<span class="slds-form-element__label">RPOC/SCA</span>
+									</label>
+								</div>
+								<div class="slds-col slds-size--1-of-4">
+									<label class="slds-checkbox">
+										<input type="checkbox" ng-model="modalTaskHelper['RPRC / RPCC']"/>
+										<span class="slds-checkbox--faux"></span>
+										<span class="slds-form-element__label">RPRC / RPCC</span>
+									</label>
+								</div>
+								<div class="slds-col slds-size--1-of-4">
+									<label class="slds-checkbox">
+										<input type="checkbox" ng-model="modalTaskHelper.RPSS"/>
+										<span class="slds-checkbox--faux"></span>
+										<span class="slds-form-element__label">RPSS</span>
+									</label>
+								</div>
+							</div>
+							<span class="form-error" ng-show="formValidatorReusableAttributes.Editing_Roles__c.error">{{formValidatorReusableAttributes.Editing_Roles__c.message}}</span>
+						</div>
+					</div>
+				</div>
+				<div ng-show="displaySpecificAttributes">
+					<div class="slds-text-heading--medium">Template Specific Attributes</div>
+					<div class="slds-form--stacked">
+						<div class="slds-form-element"> 
+							<label class="slds-form-element__label">Prerequisite Task:</label>
+							<div class="slds-form-element__control">
+								<select class="slds-select" ng-model="modalTaskWrapper.prereqTaskIndex">
+									<option value="">--None--</option>
+									<option ng-repeat="taskWrapper in otherTasks" value="{{taskWrapper.templateOrderIndex}}">{{taskWrapper.association.Task_Template__r.Task_Name__c}}</option>
+								</select>
+								<span class="form-error" ng-show="formValidatorSpecificAttributes.templateOrderIndex.error">{{formValidatorSpecificAttributes.templateOrderIndex.message}}</span>
+							</div>
+						</div>
+						<div class="slds-form-element"> 
+							<label class="slds-form-element__label">Target Date Based On:</label>
+							<div class="slds-form-element__control">
+								<select class="slds-select" ng-model="modalTaskWrapper.association.Target_Date_Based_On__c">
+									<option value="">--None--</option>
+									<option>List Creation Date</option>
+									<option>Task Completion Date</option>
+									<option>Plan Date Field</option>
+								</select>
+								<span class="form-error" ng-show="formValidatorSpecificAttributes.Target_Date_Based_On__c.error">{{formValidatorSpecificAttributes.Target_Date_Based_On__c.message}}</span>
+							</div>
+						</div>
+						<div class="slds-form-element" ng-show="modalTaskWrapper.association.Target_Date_Based_On__c == 'Task Completion Date'"> 
+							<label class="slds-form-element__label">Target Date Task:</label>
+							<div class="slds-form-element__control">
+								<select class="slds-select" ng-model="modalTaskWrapper.targetDateTaskIndex">
+									<option value="">--None--</option>
+									<option ng-repeat="taskWrapper in otherTasks" value="{{taskWrapper.templateOrderIndex}}">{{taskWrapper.association.Task_Template__r.Task_Name__c}}</option>
+								</select>
+								<span class="form-error" ng-show="formValidatorSpecificAttributes.targetDateTaskIndex.error">{{formValidatorSpecificAttributes.targetDateTaskIndex.message}}</span>
+							</div>
+						</div>
+						<div class="slds-form-element" ng-show="modalTaskWrapper.association.Target_Date_Based_On__c == 'Plan Date Field'"> 
+							<label class="slds-form-element__label">Target Date Plan Date Field:</label>
+							<div class="slds-form-element__control">
+								<select class="slds-select" ng-model="modalTaskWrapper.association.Target_Date_Plan_Date_Field__c">
+									<option value="">--Select--</option>
+									<option>Service Effective Date</option>
+									<option>NSD Received Date</option>
+									<option>Merger Date</option>
+								</select>
+								<span class="form-error" ng-show="formValidatorSpecificAttributes.Target_Date_Plan_Date_Field__c.error">{{formValidatorSpecificAttributes.Target_Date_Plan_Date_Field__c.message}}</span>
+							</div>
+						</div>
+						<div class="slds-form-element"> 
+							<label class="slds-form-element__label">Target Date Additional Days:</label>
+							<div class="slds-form-element__control">
+								<input type="number" class="slds-input" ng-model="modalTaskWrapper.association.Target_Date_Additional_Days__c"/>
+								<span class="form-error" ng-show="formValidatorSpecificAttributes.Target_Date_Additional_Days__c.error">{{formValidatorSpecificAttributes.Target_Date_Additional_Days__c.message}}</span>
+							</div>
+						</div>
+					</div>
+	        	</div>
+	      	</div>
+	      	<div class="slds-modal__footer slds-modal__footer--directional">
+	        	<button class="slds-button slds-button--neutral" ng-click="cancelModalTask()">Cancel</button>
+	        	<button ng-show="displaySpecificAttributes" class="slds-button slds-button--neutral" ng-click="previous()">Previous</button>
+	        	<button ng-show="displayReusableAttributes" class="slds-button slds-button--brand" ng-click="next()">Next</button>
+	        	<button ng-show="displaySpecificAttributes" class="slds-button slds-button--brand" ng-click="handleSaveModalTask()">Save</button>
+	      	</div>
+	    </div>
+  	</div>
+  	<div class="slds-modal-backdrop slds-modal-backdrop--open"></div>
+</div>

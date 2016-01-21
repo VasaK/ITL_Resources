@@ -1,0 +1,130 @@
+<div class="component-frame" ng-controller="componentController">
+	<div class="component-frame-header">
+		<div class="component-frame-header-title">Template Component Details</div>
+	</div>
+	<div class="component-spinner" ng-if="!formReady">
+		<div class="fa fa-refresh fa-spin fa-3x"></div>
+	</div>
+	<div class="component-form" ng-if="formReady">
+		<div class="component-edit" ng-if="editMode">
+			<div class="component-section">
+				<div class="component-item">
+					<div class="component-item-label component-item-element">
+						Text:
+					</div>
+					<div class="component-item-input component-item-element">
+						<text-angular class="component-item-input-textarea" ng-model="component.Text__c"></text-angular>
+					</div>
+				</div>
+				<div class="component-item">
+					<div class="component-item-label component-item-element">
+						Component Type:
+					</div>
+					<div class="component-item-input component-item-element">
+						<select class="component-item-select" ng-model="component.Component_Type__c">
+							<option>Question</option>
+							<option>Instructions</option>
+							<option>Statement</option>
+							<option>Header</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="component-section" ng-if="component.Component_Type__c == 'Question'">
+				<div class="component-item">
+					<div class="component-item-label component-item-element">
+						Input Type:
+					</div>
+					<div class="component-item-input component-item-element">
+						<select class="component-item-select" ng-model="component.Input_Type__c">
+							<option value="">--None--</option>
+							<option>Picklist</option>
+							<option>Checkbox</option>
+							<option>Text</option>
+							<option>Date</option>
+							<option>Number</option>
+							<option>Email</option>
+							<option>Phone</option>
+						</select>
+					</div>
+				</div>
+				<div class="component-item" ng-if="component.Input_Type__c == 'Picklist'">
+					<div class="component-item-label component-item-element">
+						Picklist Options:<br/>
+						<span class="component-item-sublabel">(separated by new line)</span>
+					</div>
+					<div class="component-item-input component-item-element">
+						<textarea class="component-item-input-textarea" ng-model="component.newLineOptions"></textarea>
+					</div>
+				</div>
+				<div class="component-item" ng-if="component.Input_Type__c != 'Checkbox'">
+					<div class="component-item-label component-item-element">
+						Required:
+					</div>
+					<div class="component-item-input component-item-element">
+						<input type="checkbox" class="component-item-input-checkbox" ng-model="component.Required__c"/>
+					</div>
+				</div>
+			</div>
+			<div class="component-section">
+				<div class="component-item">
+					<div class="component-item-label component-item-element">
+						Internal Only:
+					</div>
+					<div class="component-item-input component-item-element">
+						<input type="checkbox" class="component-item-input-checkbox" ng-model="component.Internal_Only__c"/>
+					</div>
+				</div>
+			</div>
+			<div class="component-buttons">
+				<div class="component-button">
+					<button ng-click="toggleEdit()">Save</button>
+				</div>
+				<div class="component-button">
+					<button>Cancel</button>
+				</div>
+			</div>
+		</div>
+		<div class="component-details" ng-if="!editMode">
+			<div class="component-question" ng-if="component.Component_Type__c == 'Question'">
+				<div class="component-question-items component-question-text" ng-bind-html="component.Text__c"></div>
+				<div class="component-question-items component-question-input">
+					<div class="component-question-picklist" ng-if="component.Input_Type__c == 'Picklist'">
+						<select>
+							<option ng-repeat="picklistOption in component.picklistOptions">{{picklistOption}}</option>
+						</select>
+					</div>
+					<div class="component-question-checkbox" ng-if="component.Input_Type__c == 'Checkbox'">
+						<input type="checkbox"/>
+					</div>
+					<div class="component-question-input-text" ng-if="component.Input_Type__c == 'Text'">
+						<input type="text"/>
+					</div>
+					<div class="component-question-input-date" ng-if="component.Input_Type__c == 'Date'">
+						<input type="date"/>
+					</div>
+					<div class="component-question-input-number" ng-if="component.Input_Type__c == 'Number'">
+						<input type="number"/>
+					</div>
+					<div class="component-question-input-email" ng-if="component.Input_Type__c == 'Email'">
+						<input type="email"/>
+					</div>
+					<div class="component-question-input-phone" ng-if="component.Input_Type__c == 'Phone'">
+						<input type="tel"/>
+					</div>
+				</div>
+			</div>
+			<div class="component-instructions" ng-if="component.Component_Type__c == 'Instructions'">
+				<div class="component-instructions-items component-instructions-text" ng-bind-html="component.Text__c"></div>
+			</div>
+			<div class="component-header" ng-if="component.Component_Type__c == 'Header'">
+				<div class="component-header-items component-header-text" ng-bind-html="component.Text__c"></div>
+			</div>
+			<div class="component-buttons">
+				<div class="component-button">
+					<button ng-click="toggleEdit()">Edit</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

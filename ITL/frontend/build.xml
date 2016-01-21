@@ -1,0 +1,290 @@
+<project name="Build for development" basedir="." xmlns:sf="antlib:com.salesforce">
+	<!-- Load in Ant-Contrib to give us access to some very useful tasks! -->
+    <!-- the .jar file is located in the tools directory -->
+    <taskdef resource="net/sf/antcontrib/antlib.xml">
+        <classpath>
+            <pathelement location="${basedir}/build/tools/ant-contrib-1.0b3.jar"/>
+        </classpath>
+    </taskdef>
+
+
+	<!-- 
+        Author : Salesforce Services
+        Date   : 12/12/2013
+        Description : Deploy vars secured here 
+   -->
+	<property environment="ENV"/>
+	<property file="/var/lib/jenkins/build.properties"/>
+    <property file="login.properties"/>
+    <property file="config/default.properties"/>
+    <property file="config/project.properties"/>
+
+
+    <!-- 
+        Author : Salesforce Services
+        Date   : 12/15/2013
+        Description : This method invokes from command prompt/terminal to provide the input for authenticating back to the server 
+   -->
+
+    <target name="init">
+        <input
+            message="Which type of org do you have?: (d)eveloper, (s)andbox or (p)roduction"
+            validargs="d,s,p"
+            addproperty="setup.org_type"
+        />
+        <input
+            message="What is your username?: "
+            addproperty="setup.username"
+        />
+        <input
+            message="What is your password?: "
+            addproperty="setup.password"
+        />
+        <input
+            message="What is your security token?: "
+            addproperty="setup.token"
+        />
+        <condition property="setup.url_prefix" value="test" else="login">
+            <equals arg1="s" arg2="${setup.org_type}"/>
+        </condition>
+        <delete file="login.properties"/>
+        <touch file="login.properties" mkdirs="true"/>
+        <echo file="login.properties">env.login=${setup.username}
+            env.password=${setup.password}${setup.token}
+            env.url=https://${setup.url_prefix}.salesforce.com
+        </echo>
+    </target>
+
+
+    <!--
+		Author	: Adam Schultz
+		Date	: 2/4/2014
+		Description	: Taken from tlrobinson.net blog. Macro for using git with ant.
+	-->
+    <macrodef name = "git">
+	    <attribute name = "command" />
+	    <attribute name = "dir" default = "" />
+	    <attribute name = "failonerror" default = "false" />
+	    <element name = "args" optional = "true" />
+	    <sequential>
+	        <echo message = "git @{command}" />
+	        <exec executable = "git" dir = "@{dir}">
+	            <arg value = "@{command}" />
+	            <args/>
+	        </exec>
+	    </sequential>
+	</macrodef>
+
+	<!--
+		Author	: Adam Schultz
+		Date	: 2/27/2014
+		Description	: Macro for using npm install with ant.
+	-->
+    <macrodef name = "npm">
+	    <attribute name = "command" />
+	    <attribute name = "dir" default = "" />
+	    <attribute name = "failonerror" default = "false" />
+	    <element name = "args" optional = "true" />
+	    <sequential>
+	        <echo message = "npm @{command}" />
+	        <exec executable = "npm" dir = "@{dir}">
+	            <arg value = "@{command}" />
+	            <args/>
+	        </exec>
+	    </sequential>
+	</macrodef>
+
+	<!--
+		Author	: Adam Schultz
+		Date	: 2/27/2014
+		Description	: does an npm install, pulls from git repository, then deploys to SFDC
+    -->
+	<target
+		name	=	"lazy__deploy"
+		depends	=	"npm__install,
+						pull__deploy"
+		>
+	</target>
+
+	<!--
+		Author	: Adam Schultz
+		Date	: 2/4/2014
+		Description	: pulls from git repository then deploys to SFDC
+    -->
+	<target
+		name	=	"pull__deploy"
+		depends	=	"git__pull,
+						deploy"
+		>
+	</target>
+
+    <!-- 
+        Author : Salesforce Services
+        Date   : 12/12/2013
+        Description : When we invoke this method "deploy", it will initiate the brunch compile, clean deploy,setup visualforce page etc 
+    -->
+    <target
+        name      =   "deploy"
+        depends   =   "brunch__compile,
+                        clean__deploy,
+                        setup__visualforce,
+                        retrieve__package,
+                        zip__assets_brunch,
+                        deploy__sfdc"
+        >
+    </target>
+
+    <!--
+		Author	: Adam Schultz
+		Date	: 2/4/2014
+		Description	: pulls from git repository
+    -->
+    <target name="git__pull">
+    	<git command="pull" dir="${dir.source}" failonerror="true"/>
+    </target>
+
+    <!--
+		Author	: Adam Schultz
+		Date	: 2/27/2014
+		Description	: performs npm install command
+    -->
+    <target name="npm__install">
+    	<npm command="install" dir="${dir.itlApp}" failonerror="true"/>
+    </target>
+
+    <!-- 
+        Author : Salesforce Services
+        Date   : 12/12/2013
+        Description : It deploys the package.xml based on the provided server information 
+                        #: The brunch-assets deploys only 3 Apex pages and 1 static resources
+
+    -->
+    <target name="deploy__sfdc">
+        <sf:deploy
+            username        = "${env.login}"
+            password        = "${env.password}"
+            serverurl       = "${env.url}"
+            deployRoot      = "deploy"
+            maxPoll         = "1000"
+            checkOnly       = "false"
+            pollWaitMillis  = "10000"
+            runAllTests     = "false"
+            ignoreWarnings  = "true"
+            rollbackOnError = "true"
+        >
+
+        </sf:deploy>
+    </target>
+
+    <!-- 
+        Author : Salesforce Services
+        Date   : 12/12/2013
+        Description : retrieve visualforce/assets pages
+                        
+    -->
+    <target name="retrieve__package">
+        <sf:retrieve
+            username        = "${env.login}"
+            password        = "${env.password}"
+            serverurl       = "${env.url}"
+            retrieveTarget  = "deploy"
+            unpackaged      = "deploy/package.xml"
+        />
+    </target>
+
+
+    <!-- 
+        Author : Salesforce Services
+        Date   : 12/12/2013
+        Description : compile brunch 
+                        
+    -->
+    <target name="brunch__compile">
+        <echo level="info">Executing brunchCompile.sh...</echo>
+        <exec executable="./brunchCompile.sh" failonerror="true">
+        </exec>
+        <echo level="info">done.</echo>
+    </target>
+
+     <!-- 
+        Author : Salesforce Services
+        Date   : 12/12/2013
+        Description :  brunch test
+                        
+    -->
+    <target name="brunch__test">
+        <echo level="info">Executing brunchTest.sh...</echo>
+        <exec executable="./brunchTest.sh" failonerror="false">
+        </exec>
+        <echo level="info">done.</echo>
+    </target>
+
+
+    <!-- 
+        Author : Salesforce Services
+        Date   : 12/12/2013
+        Description : remove deploy directory
+                        
+    -->
+    <target name="clean__deploy">
+        <delete dir="deploy"/>
+    </target>
+
+    <!-- 
+        Author : Salesforce Services
+        Date   : 12/12/2013
+        Description : Setup
+                        
+    -->
+    <target name="setup__visualforce">
+        <touch file="deploy/package.xml" mkdirs="true"/>
+        <echo file="deploy/package.xml"><![CDATA[<?xml version='1.0' encoding='UTF-8'?>
+        <Package xmlns='http://soap.sforce.com/2006/04/metadata'>
+            <types>
+                <members>ITL_Resource</members>
+                <name>StaticResource</name>
+            </types>
+            <version>25.0</version>
+        </Package>]]>
+        </echo>
+    </target>
+
+    <!-- 
+        Author : Salesforce Services
+        Date   : 12/12/2013
+        Description : Replace Html and creating visualforce pages 
+    -->
+    <target name="replace__visualforce">
+            <echo level="info">Replacing HTML and creating VisualForce Page</echo>
+            <exec executable="./replaceHtml.sh" failonerror="true"></exec>
+            <echo level="info">done.</echo>
+    </target>
+
+    <!-- 
+        Author : Salesforce Services
+        Date   : 12/12/2013
+        Description : copy visualforce page to salesforce/src 
+    -->
+    <target name="copy__visualforce">
+        <copy todir="../pages" overwrite="true">
+            <fileset dir="./deploy/pages">
+                <include name="**/*.page"/>
+                <include name="**/*.page-meta.xml" />
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- 
+        Author : Salesforce Services
+        Date   : 12/12/2013
+        Description : Zip assets into static resource 
+    -->
+    <target name="zip__assets_brunch">
+        <zip
+            destfile="deploy/staticresources/ITL_Resource.resource"
+            basedir="${dir.itlApp.public}"
+            update="true"
+        />
+    </target>
+
+</project>

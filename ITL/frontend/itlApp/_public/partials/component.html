@@ -1,0 +1,171 @@
+<div ng-controller="componentController">
+	<div ng-if="!helper.formReady">
+	  	<div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open">
+	    	<div class="slds-modal__container">
+	      		<div class="slds-modal__header">
+	      			<div class="slds-spinner--large centered-spinner">
+					  	<img ng-src="{{globalVars.resourceUrl}}/images/spinners/slds_spinner_brand.gif" alt="Loading..." />
+					</div>
+	        		<h2 class="slds-text-heading--medium">Loading...</h2>
+	      		</div>
+	    	</div>
+	  	</div>
+	  	<div class="slds-modal-backdrop slds-modal-backdrop--open"></div>
+	</div>
+	<div ng-if="helper.formReady">
+		<div class="slds-page-header">
+		    <div class="slds-grid">
+		        <div class="slds-col slds-has-flexi-truncate">
+		            <div class="slds-media">
+		                <div class="slds-media__body">
+		                	<p class="slds-text-heading--label">Template Component</p>
+		                    <div class="slds-grid">
+		                        <h1 class="slds-text-heading--medium slds-m-right--small slds-truncate slds-align-middle" title="{{component.Name}}">{{component.Name}}</h1>
+		                    </div>
+		                </div>
+		            </div>
+		        </div>
+		        <div class="slds-col slds-no-flex slds-align-bottom">
+		            <div class="slds-button-group" role="group" ng-if="!helper.editMode">
+		                <button class="slds-button slds-button--neutral" ng-click="toggleEdit()">Edit</button>
+		                <button class="slds-button slds-button--neutral" ng-click="delete()">Delete</button>
+		            </div>
+		            <div class="slds-button-group" role="group" ng-if="helper.editMode">
+		                <button class="slds-button slds-button--neutral" ng-click="handleSave()">Save</button>
+		                <button class="slds-button slds-button--neutral" ng-click="cancel()">Cancel</button>
+		            </div>
+		        </div>
+		    </div>
+		    <div class="slds-grid slds-page-header__detail-row" ng-if="!helper.editMode">
+		        <div class="slds-col--padded slds-size--1-of-1">
+		            <dl>
+		                <dd ng-if="component.Component_Type__c != 'Question'">
+		                    <p ng-if="component.Component_Type__c == 'Statement'" class="slds-text-body--small" title="{{component.Text__c}}" ng-bind-html="component.Text__c"></p>
+		                    <p ng-if="component.Component_Type__c == 'Header'" class="slds-text-heading--medium" title="{{component.Text__c}}" ng-bind-html="component.Text__c"></p>
+		                    <figure ng-if="component.Component_Type__c == 'Image'">
+							    <img ng-if="component.Image_Document_Id__c" ng-src="/servlet/servlet.FileDownload?file={{component.Image_Document_Id__c}}"/>
+							    <figcaption ng-bind-html="component.Text__c"></figcaption>
+							</figure>
+		                </dd>
+		                <dd ng-if="component.Component_Type__c == 'Question'">
+		                	<div class="slds-form--stacked">
+		                		<div class="slds-form-element">
+		                			<label ng-if="component.Input_Type__c != 'Checkbox'" class="slds-form-element__label {{(component.Required__c) ? 'slds-is-required' : ''}}" ng-bind-html="component.Text__c"></label>
+				                    <div class="slds-form-element__control" ng-if="component.Input_Type__c == 'Picklist'">
+				                        <select class="slds-select">
+				                        	<option value="">--None--</option>
+				                            <option ng-repeat="picklistOption in helper.picklistOptions">{{picklistOption}}</option>
+				                        </select>
+				                    </div>
+				                    <label class="slds-checkbox" ng-if="component.Input_Type__c == 'Checkbox'">
+				    					<input type="checkbox"/>
+										<span class="slds-checkbox--faux"></span>
+										<span class="slds-form-element__label"><span ng-bind-html="component.Text__c" style="display:inline-block;"></span></span>
+				  					</label>
+				                    <div class="slds-form-element__control" ng-if="component.Input_Type__c == 'Text'">
+				                        <input type="text" class="slds-input" />
+				                    </div>
+				                    <div class="slds-form-element__control" ng-if="component.Input_Type__c == 'Date'">
+				                        <input type="date" class="slds-input" />
+				                    </div>
+				                    <div class="slds-form-element__control" ng-if="component.Input_Type__c == 'Number'">
+				                        <input type="number" class="slds-input" />
+				                    </div>
+				                    <div class="slds-form-element__control" ng-if="component.Input_Type__c == 'Email'">
+				                        <input type="email" class="slds-input" />
+				                    </div>
+				                    <div class="slds-form-element__control" ng-if="component.Input_Type__c == 'Phone'">
+				                        <input type="tel" class="slds-input" />
+				                    </div>
+				                    <div class="slds-form-element__control" ng-if="component.Input_Type__c == 'State'">
+				                        <input type="text" class="slds-input" />
+				                    </div>
+				                    <div class="slds-form-element__control" ng-if="component.Input_Type__c == 'Zip Code'">
+				                        <input type="text" class="slds-input" />
+				                    </div>
+				                    <div class="slds-form-element__control" ng-if="component.Input_Type__c == 'SSN'">
+				                        <input type="text" class="slds-input" />
+				                    </div>
+			                    </div>
+		                    </div>
+		                </dd>
+		            </dl>
+		        </div>
+		    </div>
+		</div>
+		<div>
+  			<span class="form-error" ng-show="formValidator.form.error">{{formValidator.form.message}}</span>
+  		</div>
+		<div class="slds-form--stacked" ng-if="helper.editMode">
+			<div class="slds-form-element">
+				<label class="slds-form-element__label">Text:</label>
+				<div class="slds-form-element__control">
+					<text-angular ng-model="component.Text__c"></text-angular>
+					<span class="form-error" ng-show="formValidator.Text__c.error">{{formValidator.Text__c.message}}</span>
+				</div>
+			</div>
+			<div class="slds-form-element">
+				<label class="slds-form-element__label">Component Type:</label>
+				<div class="slds-form-element__control">
+					<select class="slds-select" ng-model="component.Component_Type__c">
+						<option>Question</option>
+						<option>Statement</option>
+						<option>Header</option>
+						<option>Image</option>
+					</select>
+					<span class="form-error" ng-show="formValidator.Component_Type__c.error">{{formValidator.Component_Type__c.message}}</span>
+				</div>
+			</div>
+			<div class="slds-form-element" ng-if="component.Component_Type__c == 'Image'">
+			    <input type="file" ng-model="imageFile" base-sixty-four-input onload="onLoad" maxsize="500" accept="image/*" ng-if="!component.Image_Document_Id__c"/>
+			    <span class="form-error" ng-show="formValidator.imageFile.error">{{formValidator.imageFile.message}}</span>
+			    <div>
+			    	<img ng-if="component.Image_Document_Id__c" ng-src="/servlet/servlet.FileDownload?file={{component.Image_Document_Id__c}}"/>
+			    </div>
+			    <button class="slds-button" ng-click="clearImage()" ng-if="component.Image_Document_Id__c">Remove Image</button>
+			</div>
+			<div ng-if="component.Component_Type__c == 'Question'">
+				<div class="slds-form-element">
+					<label class="slds-form-element__label">Input Type:</label>
+					<div class="slds-form-element__control">
+						<select class="slds-select" ng-model="component.Input_Type__c">
+							<option value="">--None--</option>
+							<option>Picklist</option>
+							<option>Checkbox</option>
+							<option>Text</option>
+							<option>Date</option>
+							<option>Number</option>
+							<option>Email</option>
+							<option>Phone</option>
+							<option>State</option>
+							<option>Zip Code</option>
+							<option>SSN</option>
+						</select>
+						<span class="form-error" ng-show="formValidator.Input_Type__c.error">{{formValidator.Input_Type__c.message}}</span>
+					</div>
+				</div>
+				<div class="slds-form-element" ng-if="component.Input_Type__c == 'Picklist'">
+					<label class="slds-form-element__label">Picklist Options:</label>
+					<div class="slds-form-element__control">
+						<textarea class="slds-textarea" ng-model="helper.newLineOptions" placeholder="Separate each option by a new line..."></textarea>
+						<span class="form-error" ng-show="formValidator.newLineOptions.error">{{formValidator.newLineOptions.message}}</span>
+					</div>
+				</div>
+				<div class="slds-form-element" ng-if="component.Input_Type__c != 'Checkbox'">
+					<label class="slds-checkbox">
+						<input type="checkbox" ng-model="component.Required__c"/>
+						<span class="slds-checkbox--faux"></span>
+						<span class="slds-form-element__label">Required</span>
+						</label>
+				</div>
+			</div>
+			<div class="slds-form-element">
+				<label class="slds-checkbox">
+					<input type="checkbox" ng-model="component.Internal_Only__c"/>
+					<span class="slds-checkbox--faux"></span>
+					<span class="slds-form-element__label">Internal Only</span>
+				</label>
+			</div>
+		</div>
+	</div>
+</div>

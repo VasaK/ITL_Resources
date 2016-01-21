@@ -1,0 +1,79 @@
+<div class="slds-box background-{{component.Component_Type__c}} available-component-container">
+    <div class="delete-component-corner-container">
+        <button class="slds-button delete-component-corner-button" ng-click="deleteComponent($event)">
+            <svg aria-hidden="true" class="delete-component-corner-button-icon slds-button__icon slds-button__icon--large slds-button__icon--inverse slds-icon-action-delete">
+                <use xlink:href="{{xlinkHelper.delete}}"></use>
+            </svg>
+        </button>
+    </div>
+    <div class="add-component-above-container">
+        <button class="slds-button add-component-above-button">
+            <svg aria-hidden="true" class="slds-button__icon slds-button__icon--small slds-button__icon--inverse">
+                <use xlink:href="{{xlinkHelper.add}}"></use>
+            </svg>
+            <span class="slds-assistive-text">close</span>
+        </button>
+    </div>
+	<dl>
+        <dd ng-if="component.Component_Type__c != 'Question'">
+            <p ng-if="component.Component_Type__c == 'Statement'" class="slds-text-body--small" title="{{component.Text__c}}" ng-bind-html="component.Text__c"></p>
+            <p ng-if="component.Component_Type__c == 'Header'" class="slds-text-heading--medium" title="{{component.Text__c}}" ng-bind-html="component.Text__c"></p>
+            <figure ng-if="component.Component_Type__c == 'Image'">
+                <span class="slds-avatar slds-avatar--medium">
+                    <img ng-if="component.Image_Document_Id__c" ng-src="/servlet/servlet.FileDownload?file={{component.Image_Document_Id__c}}"/>
+                </span>
+                <figcaption ng-bind-html="component.Text__c"></figcaption>
+            </figure>
+        </dd>
+        <dd ng-if="component.Component_Type__c == 'Question'">
+        	<div class="slds-form--stacked">
+        		<div class="slds-form-element">
+        			<label ng-if="component.Input_Type__c != 'Checkbox'" class="slds-form-element__label {{(component.Required__c) ? 'slds-is-required' : ''}}" ng-bind-html="component.Text__c"></label>
+                    <div class="slds-form-element__control" ng-if="component.Input_Type__c == 'Picklist'">
+                        <select class="slds-select">
+                        	<option value="">--None--</option>
+                            <option ng-repeat="picklistOption in (component.Picklist_Options__c | picklistTransform)">{{picklistOption}}</option>
+                        </select>
+                    </div>
+                    <label class="slds-checkbox" ng-if="component.Input_Type__c == 'Checkbox'">
+    					<input type="checkbox"/>
+						<span class="slds-checkbox--faux"></span>
+						<span class="slds-form-element__label"><span ng-bind-html="component.Text__c" style="display:inline-block;"></span></span>
+  					</label>
+                    <div class="slds-form-element__control" ng-if="component.Input_Type__c == 'Text'">
+                        <input type="text" class="slds-input" />
+                    </div>
+                    <div class="slds-form-element__control" ng-if="component.Input_Type__c == 'Date'">
+                        <input type="date" class="slds-input" />
+                    </div>
+                    <div class="slds-form-element__control" ng-if="component.Input_Type__c == 'Number'">
+                        <input type="number" class="slds-input" />
+                    </div>
+                    <div class="slds-form-element__control" ng-if="component.Input_Type__c == 'Email'">
+                        <input type="email" class="slds-input" />
+                    </div>
+                    <div class="slds-form-element__control" ng-if="component.Input_Type__c == 'Phone'">
+                        <input type="tel" class="slds-input" />
+                    </div>
+                    <div class="slds-form-element__control" ng-if="component.Input_Type__c == 'State'">
+                        <input type="text" class="slds-input" />
+                    </div>
+                    <div class="slds-form-element__control" ng-if="component.Input_Type__c == 'Zip Code'">
+                        <input type="text" class="slds-input" />
+                    </div>
+                    <div class="slds-form-element__control" ng-if="component.Input_Type__c == 'SSN'">
+                        <input type="text" class="slds-input" />
+                    </div>
+                </div>
+            </div>
+        </dd>
+    </dl>
+    <div class="add-component-below-container">
+        <button class="slds-button add-component-below-button">
+            <svg aria-hidden="true" class="slds-button__icon slds-button__icon--small slds-button__icon--inverse">
+                <use xlink:href="{{xlinkHelper.add}}"></use>
+            </svg>
+            <span class="slds-assistive-text">close</span>
+        </button>
+    </div>
+</div>

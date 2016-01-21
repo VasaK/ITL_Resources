@@ -1,0 +1,158 @@
+<div ng-controller="noteModalController">
+  	<div ng-show="displayViewNoteModal">
+		<div aria-hidden="false" role="dialog" class="slds-modal slds-modal--large slds-fade-in-open">
+		    <div class="slds-modal__container">
+		    	<div class="slds-modal__header">
+		        	<h2 class="slds-text-heading--medium">View Note</h2>
+		        	<button class="slds-button slds-modal__close" ng-click="closeModal()">
+			          	<svg aria-hidden="true" class="slds-button__icon slds-button__icon--inverse slds-button__icon--large">
+			            	<use xlink:href="{{xlinkHelper.close}}"></use>
+			          	</svg>
+			          	<span class="slds-assistive-text">Close</span>
+			        </button>
+		      	</div>
+		      	<div class="slds-modal__content">
+		        	<div>
+		          		<div class="slds-grid slds-wrap">
+		          			<div class="slds-form-element slds-col slds-size--1-of-1">
+								<label class="slds-form-element__label">Subject:</label>
+								<div class="slds-form-element__control">
+									<p class="slds-text-body--medium" ng-bind-html="noteWrapper.note.Subject__c"></p>
+								</div>
+							</div>
+							<div class="slds-form-element slds-col slds-size--1-of-3">
+								<label class="slds-form-element__label">Reason:</label>
+								<div class="slds-form-element__control">
+									<p class="slds-text-body--medium" ng-bind-html="noteWrapper.note.Reason__c"></p>
+								</div>
+							</div>
+							<div class="slds-form-element slds-col slds-size--1-of-3">
+								<label class="slds-form-element__label">Use Warning:</label>
+								<div class="slds-form-element__control">
+									<p class="slds-text-body--medium" ng-if="noteWrapper.note.Use_Warning__c">Yes</p>
+									<p class="slds-text-body--medium" ng-if="!noteWrapper.note.Use_Warning__c">No</p>
+								</div>
+							</div>
+							<div class="slds-form-element slds-col slds-size--1-of-3">
+								<label class="slds-form-element__label">Expire On:</label>
+								<div class="slds-form-element__control">
+									<p class="slds-text-body--medium">{{noteWrapper.note.Expire_on__c | convertToDateString}}</p>
+								</div>
+							</div>
+							<div class="slds-form-element slds-col slds-size--1-of-3">
+								<label class="slds-form-element__label">Contact:</label>
+								<div class="slds-form-element__control">
+									<p class="slds-text-body--medium">{{noteWrapper.contactName}}</p>
+								</div>
+							</div>
+							<div class="slds-form-element slds-col slds-size--1-of-3">
+								<label class="slds-form-element__label">Created:</label>
+								<div class="slds-form-element__control">
+									<p class="slds-text-body--medium">{{noteWrapper.note.CreatedDate | convertToDateString}} {{noteWrapper.creator}}</p>
+								</div>
+							</div>
+							<div class="slds-form-element slds-col slds-size--1-of-3">
+								<label class="slds-form-element__label">Last Modified:</label>
+								<div class="slds-form-element__control">
+									<p class="slds-text-body--medium">{{noteWrapper.note.LastModifiedDate | convertToDateString}} {{noteWrapper.modifier}}</p>
+								</div>
+							</div>
+						</div>
+						<div class="slds-tabs--default notes-related-lists">
+						  	<ul class="slds-tabs--default__nav" role="tablist">
+						    	<li id="note-text--tab" class="slds-tabs__item slds-text-heading--label slds-active" role="presentation">
+						    		<a ng-click="switchTab('note-text')" role="tab" tabindex="0" aria-selected="true" aria-controls="tab-default-1">Note Text</a>
+						    	</li>
+						    	<li id="service-issue--tab" class="slds-tabs__item slds-text-heading--label" role="presentation">
+						    		<a ng-click="switchTab('service-issue')" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-2">Service Issues</a>
+					    		</li>
+						  	</ul>
+						  	<div id="note-text--panel" class="slds-tabs__content slds-show" role="tabpanel">
+						    	<ul class="slds-list--vertical slds-has-dividers">
+	  								<li class="slds-list__item text-list-item" ng-repeat="textWrapper in noteWrapper.textWrappers">
+	  									<div class="slds-grid slds-wrap">
+	  										<div class="slds-form-element slds-col slds-size--1-of-3">
+												<label class="slds-form-element__label">Type:</label>
+												<div class="slds-form-element__control">
+													<p class="slds-text-body--medium" ng-bind-html="textWrapper.text.Type__c"></p>
+												</div>
+											</div>
+											<div class="slds-form-element slds-col slds-size--1-of-3">
+												<label class="slds-form-element__label">Score:</label>
+												<div class="slds-form-element__control">
+													<p class="slds-text-body--medium" ng-bind-html="textWrapper.text.Notes_Text_Score__c"></p>
+												</div>
+											</div>
+											<div class="slds-form-element slds-col slds-size--1-of-3">
+												<label class="slds-form-element__label">Created:</label>
+												<div class="slds-form-element__control">
+													<p class="slds-text-body--medium">{{textWrapper.text.CreatedDate | convertToDateString}} {{textWrapper.creator}}</p>
+												</div>
+											</div>
+											<div class="slds-form-element slds-col slds-size--1-of-1">
+												<label class="slds-form-element__label">Text:</label>
+												<div class="slds-form-element__control">
+													<p class="slds-text-body--medium formatted-text" ng-bind-html="textWrapper.text.Notes__c"></p>
+												</div>
+											</div>
+	  									</div>
+	  								</li>
+  								</ul>
+						  	</div>
+						  	<div id="service-issue--panel" class="slds-tabs__content slds-hide" role="tabpanel">
+						  		<h3 class="slds-text-heading--small" ng-hide="noteWrapper.issueWrappers.length > 0">No Related Issues</h3>
+						    	<table class="slds-table slds-table--bordered" ng-show="noteWrapper.issueWrappers.length > 0">
+								  	<thead>
+								    	<tr class="slds-text-heading--label">
+								      		<th scope="col">
+								        		<span class="slds-truncate">Created</span>
+								      		</th>
+								      		<th scope="col">
+								        		<span class="slds-truncate">Discovered</span>
+								      		</th>
+								      		<th scope="col">
+								        		<span class="slds-truncate">Resolved</span>
+							      			</th>
+								      		<th scope="col">
+								        		<span class="slds-truncate">Categories</span>
+								      		</th>
+								      		<th scope="col">
+								        		<span class="slds-truncate">Details</span>
+								      		</th>
+								    	</tr>
+								  	</thead>
+								  	<tbody>
+								    	<tr class="slds-hint-parent slds-text-body--small service-issue-row" ng-repeat="issueWrapper in noteWrapper.issueWrappers" expand-table-row>
+								      		<td data-label="Created">
+								        		<span>{{issueWrapper.issue.CreatedDate | convertToDateString}}<br/>{{issueWrapper.creator}}</span>
+								      		</td>
+								      		<td data-label="Discovered">
+								        		<span>{{issueWrapper.issue.Discovered__c | convertToDateString}}</span>
+								      		</td>
+								      		<td data-label="Resolved">
+								        		<span>{{issueWrapper.issue.Resolved__c | convertToDateString}}</span>
+								      		</td>
+								      		<td data-label="Categories">
+								        		<span ng-bind-html="issueWrapper.issue.Issue_Categories__c | picklistNewLine"></span>
+								      		</td>
+								      		<td class="slds-truncate needs-expanding" data-label="Details"><span ng-bind-html="issueWrapper.issue.Details__c"></span></td>
+							    		</tr>
+								  	</tbody>
+								</table>
+						  	</div>
+						</div>
+		        	</div>
+		      	</div>
+		      	<div class="slds-modal__footer slds-modal__footer--directional">
+		        	<button class="slds-button slds-button--neutral" ng-click="closeModal()">Close</button>
+		        	<button class="slds-button slds-button--brand" ng-click="appendNoteModal()" ng-if="canCreateNotes">Append Note</button>
+		        	<button class="slds-button slds-button--brand" ng-click="createIssueModal()" ng-if="canCreateNotes">New Service Issue</button>
+		      	</div>
+		    </div>
+	  	</div>
+	  	<div class="slds-modal-backdrop slds-modal-backdrop--open"></div>
+  	</div>
+  	<div ng-show="displayCreateNoteModal" ng-include="createNoteModalTemplate"></div>
+  	<div ng-show="displayAppendNoteModal" ng-include="appendNoteModalTemplate"></div>
+  	<div ng-show="displayCreateIssueModal" ng-include="createIssueModalTemplate"></div>
+</div>
